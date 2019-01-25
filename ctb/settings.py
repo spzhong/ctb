@@ -42,11 +42,10 @@ INSTALLED_APPS = (
 )
 
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
-
+CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
-    ('*/1 * * * *', 'python /srv/ctb/ctb/crontab.py >> /srv/ctb/log/crontab.log'),
+    ('*/1 * * * *', 'ctb.crontab.outPrint', '>> /srv/ctb/log/crontab.log')
 ]
-
 
 
 MIDDLEWARE_CLASSES = (
