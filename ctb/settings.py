@@ -43,7 +43,7 @@ INSTALLED_APPS = (
 
 
 CRONJOBS = [
-    ('00 15 * * *', 'ctb.crontab.outPrint'),
+    ('10 15 * * *', 'ctb.crontab.outPrint'),
 ]
 
 
