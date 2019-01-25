@@ -5,3 +5,5 @@ def outPrint():
     print "hello"
     logger = logging.getLogger("django")
     logger.info("hello")
+
+outPrint();
