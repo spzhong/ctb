@@ -12,7 +12,9 @@ class user(models.Model):
     # 0是管理员，1是运营人员，2是普通的用户
     role = models.IntegerField(default=2)
     createTime = models.BigIntegerField(default=0)
-
+    # 收入和支出的总金额
+    incomeMoney = models.IntegerField(default=0)
+    outPutMoney = models.IntegerField(default=0)
 
 # 车辆信息
 class carInfo(models.Model):
@@ -74,7 +76,7 @@ class getTask(models.Model):
     carId = models.IntegerField(default=0, db_index=True)
     taskId = models.IntegerField(default=0,db_index=True)
     createTime = models.BigIntegerField(default=0)
-    # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），-1是已删除
+    # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
     status = models.IntegerField(default=0)
     # 开始任务的时间
     startdoTaskTime = models.BigIntegerField(default=0)
@@ -94,6 +96,8 @@ class doTask(models.Model):
     latitude = models.FloatField(max_length=20,default=0.0)
     # 经度(可以为空)
     longitude = models.FloatField(max_length=20,default=0.0)
+    # 当前任务的状态，0是提交审核，1是审核通过，2是审核失败，-1是已删除
+    status = models.IntegerField(default=0)
 
 
 # 收入流水(后台定时调度任务执行的)

@@ -44,6 +44,7 @@ INSTALLED_APPS = (
 
 CRONJOBS = [
     ('10 15 * * *', 'ctb.crontab.outPrint'),
+    ('*/1 * * * *', 'ctb.crontab.outPrint','>> /srv/ctb/log/crontab.log'),
 ]
 
 
