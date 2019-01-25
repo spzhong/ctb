@@ -44,8 +44,8 @@ INSTALLED_APPS = (
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 CRONJOBS = [
-    ('10 15 * * *', '/srv/ctb/ctb/crontab.py'),
-    ('*/1 * * * *', '/srv/ctb/ctb/crontab.py','>> /srv/ctb/log/crontab.log'),
+    ('10 15 * * *', 'python /srv/ctb/ctb/crontab.py'),
+    ('*/1 * * * *', 'python /srv/ctb/ctb/crontab.py','>> /srv/ctb/log/crontab.log'),
 ]
 
 
