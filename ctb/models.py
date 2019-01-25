@@ -33,9 +33,9 @@ class activityRange(models.Model):
     # 车辆信息（可以为空）
     carInfoId = models.IntegerField(default=0,db_index=True,null=True)
     # 维度
-    latitude = models.FloatField(max_length=20,decimal_places=3)
+    latitude = models.FloatField(max_length=20,default=0.0)
     # 经度
-    longitude = models.FloatField(max_length=20,decimal_places=3)
+    longitude = models.FloatField(max_length=20,default=0.0)
     createTime = models.BigIntegerField(default=0)
 
 
@@ -91,9 +91,9 @@ class doTask(models.Model):
     # 图片jsonString结构[]
     adImgs = models.CharField(max_length=1024)
     # 维度(可以为空)
-    latitude = models.FloatField(max_length=20,decimal_places=3,default=0.0)
+    latitude = models.FloatField(max_length=20,default=0.0)
     # 经度(可以为空)
-    longitude = models.FloatField(max_length=20,decimal_places=3,default=0.0)
+    longitude = models.FloatField(max_length=20,default=0.0)
 
 
 # 收入流水(后台定时调度任务执行的)
