@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from django.http import HttpResponse
 import json
 
