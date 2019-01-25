@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django_crontab',
     'ctb',
 )
- 
+
 
 CRONJOBS = [
     ('00 15 * * *', 'ctb.crontab.outPrint'),
