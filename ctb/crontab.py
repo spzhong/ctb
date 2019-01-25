@@ -2,3 +2,5 @@
 
 def outPrint():
     print "hello"
+
+outPrint()
