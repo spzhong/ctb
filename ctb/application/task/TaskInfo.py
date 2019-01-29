@@ -3,6 +3,7 @@ import logging
 from django.http import HttpResponse
 import json
 import sys
+import time
 sys.path.append('...')
 from ctb.models import user
 from ctb.models import carInfo
