@@ -20,10 +20,10 @@ def wxegisterSign(request):
         return callBackDict
     try:
         # 查询判断用户是否已经存在的
-        userList = user.objects.filter(openId = getopneId)
+        userList = user.objects.filter(openId=getopneId)
         if len(userList) > 0:
             Comm.callBackSuccess(callBackDict, 1, userList[0].id)
-            return
+            return callBackDict
         createTime = int(time.time() * 1000)
         userObj = user.objects.create(openId=getopneId, role=2, createTime=createTime)
         userObj.save()

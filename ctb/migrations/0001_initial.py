@@ -50,6 +50,7 @@ class Migration(migrations.Migration):
                 ('adImgs', models.CharField(max_length=1024)),
                 ('latitude', models.FloatField(default=0.0, max_length=20)),
                 ('longitude', models.FloatField(default=0.0, max_length=20)),
+                ('status', models.IntegerField(default=0)),
             ],
             options={
             },
@@ -122,6 +123,20 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='taskStream',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('userId', models.IntegerField(default=0, db_index=True)),
+                ('openId', models.CharField(max_length=64, db_index=True)),
+                ('getTask', models.IntegerField(default=0, db_index=True)),
+                ('createTime', models.BigIntegerField(default=0)),
+                ('info', models.CharField(max_length=1024, null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='user',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -131,6 +146,8 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=64, null=True)),
                 ('role', models.IntegerField(default=2)),
                 ('createTime', models.BigIntegerField(default=0)),
+                ('incomeMoney', models.IntegerField(default=0)),
+                ('outPutMoney', models.IntegerField(default=0)),
             ],
             options={
             },

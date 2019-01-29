@@ -5,7 +5,7 @@ from django.db import models
 
 # 用户
 class user(models.Model):
-    openId = models.CharField(max_length=64, db_index=True, unique=True)
+    openId = models.CharField(max_length=64,unique=True)
     phone = models.CharField(max_length=15, null=True,db_index=True)
     name = models.CharField(max_length=255, null=True)
     password = models.CharField(max_length=64,null=True)
