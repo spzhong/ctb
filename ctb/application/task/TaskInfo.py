@@ -69,8 +69,8 @@ def wxGetALLTask(request):
     try:
         taskInfoList = taskInfo.objects.filter(status__range=[2, 3])
         list = []
-        for taskInfo in taskInfoList:
-            list.append(makeDictaskInfo(taskInfo))
+        for onetaskInfo in taskInfoList:
+            list.append(makeDictaskInfo(onetaskInfo))
         Comm.callBackSuccess(callBackDict, 1, list)
     except BaseException as e:
         Comm.callBackFail(callBackDict,-1,"系统异常")
