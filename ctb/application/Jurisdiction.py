@@ -22,7 +22,7 @@ def jurisdictGETOpenId(request,callBackDict):
         if len(userList) == 0:
             callBackDict['code'] = -2
             callBackDict['msg'] = "用户不存在"
-            return callBackDict
+            return None
         # 查询出来了用户了
         return userList[0]
     except BaseException as e:
