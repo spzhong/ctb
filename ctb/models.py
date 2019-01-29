@@ -124,6 +124,15 @@ class outStream(models.Model):
     money = models.IntegerField(default=0)
 
 
-
+# 任务流水--待定
+class taskStream(models.Model):
+    # 验证的用户信息
+    userId = models.IntegerField(default=0, db_index=True)
+    openId = models.CharField(max_length=64, db_index=True)
+    # 领取任务的ID
+    getTask = models.IntegerField(default=0, db_index=True)
+    createTime = models.BigIntegerField(default=0)
+    # 备注信息
+    info = models.CharField(max_length=1024,null=True)
 
 

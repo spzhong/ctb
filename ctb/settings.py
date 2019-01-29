@@ -37,15 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_crontab',
     'ctb',
 )
 
-CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
-CRONTAB_COMMAND_SUFFIX = '2>&1'
-CRONJOBS = [
-    ('*/1 * * * *', 'ctb.crontab.outPrint', '>> /srv/ctb/log/crontab.log')
-]
 
 
 MIDDLEWARE_CLASSES = (

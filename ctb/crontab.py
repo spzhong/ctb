@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
+import time
 
-def outPrint():
-    print "hello"
-    logger = logging.getLogger("django")
-    logger.info("hello")
+from models import taskInfo
+from models import getTask
+from models import doTask
 
-outPrint();
+
+# 执行的任务
+def doTask():
+    createTime = int(time.time() * 1000)
+    getTaskList = getTask.objects.filter(state=1,createTime__gte=createTime)
+
+
+
+doTask()
