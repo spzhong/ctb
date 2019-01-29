@@ -13,6 +13,8 @@ def index(request,route):
         callBackDict = Car.wxgetCarList(request)
     elif route == 'wxAddCar':
         callBackDict = Car.wxAddCar(request)
+    elif route == 'wxEditCar':
+        callBackDict = Car.wxEditCar(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))
