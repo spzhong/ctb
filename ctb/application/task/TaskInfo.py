@@ -24,18 +24,19 @@ def wxGetJoinTask(request):
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
-        return Comm.callBackSuccess(callBackDict, 1, [])
+        Comm.callBackSuccess(callBackDict, 1, [])
+        return callBackDict
     list = []
-    for getTask in getTaskList:
+    for onegetTask in getTaskList:
         try:
-            carInfoObj = carInfo.objects.get(id = getTask.carId)
+            carInfoObj = carInfo.objects.get(id = onegetTask.carId)
         except BaseException as e:
             carInfoObj = None
         try:
-            taskInfoObj = taskInfo.objects.get(id = getTask.taskId)
+            taskInfoObj = taskInfo.objects.get(id = onegetTask.taskId)
         except BaseException as e:
             taskInfoObj = None
-        dict = {"id":getTask.id,"carId":getTask.carId,"taskId":getTask.taskId,"createTime":getTask.createTime,"status":getTask.status,"startdoTaskTime":getTask.startdoTaskTime}
+        dict = {"id":onegetTask.id,"carId":onegetTask.carId,"taskId":onegetTask.taskId,"createTime":onegetTask.createTime,"status":onegetTask.status,"startdoTaskTime":onegetTask.startdoTaskTime}
         if carInfoObj:
             dict['carInfo'] = {"id":carInfoObj.id,"carNum":carInfoObj.carNum,"carModel":carInfoObj.carModel,"remark":carInfoObj.remark,"adImgs":json.loads(carInfoObj.adImgs)}
         if taskInfoObj:
@@ -48,9 +49,9 @@ def wxGetJoinTask(request):
 
 
 # 将任务的对象信息转换为字典
-def makeDictaskInfo(carInfo):
-    imgsJosn = json.loads(carInfo.adImgs)
-    return  {"id": carInfo.id, "title": taskInfo.title, "createTime": taskInfo.createTime,
+def makeDictaskInfo(taskInfo):
+    imgsJosn = json.loads(taskInfo.adImgs)
+    return  {"id": taskInfo.id, "title": taskInfo.title, "createTime": taskInfo.createTime,
      "activityRange": taskInfo.activityRange, "billingCycle": taskInfo.billingCycle,
      "collectionsNum": taskInfo.collectionsNum, "limitNum": taskInfo.limitNum, "priceMonth": taskInfo.priceMonth,
      "stickerArea": taskInfo.stickerArea, "deadline": taskInfo.deadline, "info": taskInfo.info,
