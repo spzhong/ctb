@@ -16,6 +16,8 @@ def wxegisterSign(request):
     # 取得获取的值
     callBackDict = {}
     getopenId = Comm.tryTranslate(request, "openId")
+    logger = logging.getLogger("django")
+    logger.info('getopenId:'+getopenId)
     if Comm.tryTranslateNull('openId', getopenId, callBackDict) == False:
         return callBackDict
     try:
