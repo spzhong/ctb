@@ -67,6 +67,7 @@ def wxAddCar(request):
         Comm.callBackFail(callBackDict,-1,"车牌号已添加")
     return callBackDict
 
+
 # 编辑车辆
 def wxEditCar(request):
     callBackDict = {}
@@ -92,6 +93,8 @@ def wxEditCar(request):
     getremark = Comm.tryTranslate(request, "remark")
     try:
         carInfoObj = carInfo.objects.get(id = getcarId)
+        carInfoObj.carNum = getcarNum
+        carInfoObj.adImgs = getadImgs
         if getcarModel:
             carInfoObj.carModel = getcarModel
         if getremark:

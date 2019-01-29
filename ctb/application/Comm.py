@@ -34,8 +34,11 @@ def tryTranslateNull(key,value,callBackDict):
 def callBackSuccess(callBackDict,code,data):
     callBackDict['code'] = code
     callBackDict['data'] = data
+    return callBackDict
+
 
 # 失败的回调
 def callBackFail(callBackDict,code,msg):
     callBackDict['code'] = code
     callBackDict['msg'] = msg
+    return callBackDict

@@ -16,6 +16,7 @@ class user(models.Model):
     incomeMoney = models.IntegerField(default=0)
     outPutMoney = models.IntegerField(default=0)
 
+
 # 车辆信息
 class carInfo(models.Model):
     userId = models.IntegerField(default=0,db_index=True)
@@ -82,6 +83,7 @@ class getTask(models.Model):
     startdoTaskTime = models.BigIntegerField(default=0)
 
 
+
 # 做任务（至少两次，方才有效，动态扫描这个表，计算收入的流水）
 class doTask(models.Model):
     # 验证的用户信息
@@ -118,7 +120,7 @@ class outStream(models.Model):
     userId = models.IntegerField(default=0, db_index=True)
     openId = models.CharField(max_length=64, db_index=True)
     # 领取任务的ID
-    getTask = models.IntegerField(default=0, db_index=True)
+    getTaskId = models.IntegerField(default=0, db_index=True)
     createTime = models.BigIntegerField(default=0)
     # 支出的钱
     money = models.IntegerField(default=0)
@@ -130,7 +132,7 @@ class taskStream(models.Model):
     userId = models.IntegerField(default=0, db_index=True)
     openId = models.CharField(max_length=64, db_index=True)
     # 领取任务的ID
-    getTask = models.IntegerField(default=0, db_index=True)
+    getTaskId = models.IntegerField(default=0, db_index=True)
     createTime = models.BigIntegerField(default=0)
     # 备注信息
     info = models.CharField(max_length=1024,null=True)

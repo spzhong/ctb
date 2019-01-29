@@ -4,6 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from .application import user
 from .application import task
+from .application import check
 
 
 
@@ -14,6 +15,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
     url(r'^ctb/user/([a-z,A-Z]+)$', user.index),
     url(r'^ctb/task/([a-z,A-Z]+)$', task.index),
+    url(r'^ctb/check/([a-z,A-Z]+)$', check.index),
 )
 
 
