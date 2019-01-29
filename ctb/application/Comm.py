@@ -20,11 +20,11 @@ def tryTranslateNull(key,value,callBackDict):
         callBackDict['msg'] = "缺少["+key+"]字段"
         return False
     if len(value) == 0:
-        callBackDict['code'] = 1
+        callBackDict['code'] = 0
         callBackDict['msg'] = "[" + key + "]字段为空"
         return False
     if len(value) > 1024:
-        callBackDict['code'] = 2
+        callBackDict['code'] = 0
         callBackDict['msg'] = "[" + key + "]字段太长了"
         return False
     return True
