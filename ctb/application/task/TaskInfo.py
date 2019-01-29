@@ -181,12 +181,12 @@ def adminCreateTask(request):
     # 创建当前的任务
     getcreateTime = int(time.time() * 1000)
     try:
-        taskInfoObj = taskInfo.objects.create(status=2,userId=userObj.id, limitNum = getlimitNum ,priceMonth = getpriceMonth,stickerArea = getstickerArea,openId=userObj.openId,title =gettitle,info = getinfo,deadline =getdeadline,
+        taskInfoObj = taskInfo.objects.create(status=2,limitNum = getlimitNum ,priceMonth = getpriceMonth,stickerArea = getstickerArea,title =gettitle,info = getinfo,deadline =getdeadline,
                                       adImgs=getadImgs, createTime=getcreateTime)
         taskInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, taskInfoObj.id)
     except BaseException as e:
-        Comm.callBackFail(callBackDict, -1, "删除失败")
+        Comm.callBackFail(callBackDict, -1, "系统异常")
         logger = logging.getLogger("django")
         logger.info(str(e))
     return callBackDict
