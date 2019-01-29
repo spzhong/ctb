@@ -15,17 +15,17 @@ from .. import Jurisdiction
 def wxegisterSign(request):
     # 取得获取的值
     callBackDict = {}
-    getopneId = Comm.tryTranslate(request, "opneId")
-    if Comm.tryTranslateNull('opneId', getopneId, callBackDict) == False:
+    getopenId = Comm.tryTranslate(request, "openId")
+    if Comm.tryTranslateNull('openId', getopenId, callBackDict) == False:
         return callBackDict
     try:
         # 查询判断用户是否已经存在的
-        userList = user.objects.filter(openId=getopneId)
+        userList = user.objects.filter(openId=getopenId)
         if len(userList) > 0:
             Comm.callBackSuccess(callBackDict, 1, userList[0].id)
             return callBackDict
         createTime = int(time.time() * 1000)
-        userObj = user.objects.create(openId=getopneId, role=2, createTime=createTime)
+        userObj = user.objects.create(openId=getopenId, role=2, createTime=createTime)
         userObj.save()
         Comm.callBackSuccess(callBackDict, 1, userObj.id)
     except BaseException as e:
