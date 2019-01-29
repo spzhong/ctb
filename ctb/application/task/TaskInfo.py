@@ -51,7 +51,10 @@ def wxGetJoinTask(request):
 
 # 将任务的对象信息转换为字典
 def makeDictaskInfo(taskInfo):
-    imgsJosn = json.loads(taskInfo.adImgs)
+    try:
+        imgsJosn = json.loads(taskInfo.adImgs)
+    except BaseException as e:
+        imgsJosn = []
     return  {"id": taskInfo.id, "title": taskInfo.title, "createTime": taskInfo.createTime,
      "activityRange": taskInfo.activityRange, "billingCycle": taskInfo.billingCycle,
      "collectionsNum": taskInfo.collectionsNum, "limitNum": taskInfo.limitNum, "priceMonth": taskInfo.priceMonth,
@@ -131,8 +134,14 @@ def adminGetALLTask(request):
     userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
+    getstatus = Comm.tryTranslate(request, "status")
+    if Comm.tryTranslateNull('status', getstatus, callBackDict) == False:
+        return callBackDict
     try:
-        taskInfoList = taskInfo.objects.all()
+        if getstatus == 'all':
+            taskInfoList = taskInfo.objects.all()
+        else:
+            taskInfoList = taskInfo.objects.filter(status=getstatus)
         list = []
         for onetaskInfo in taskInfoList:
             list.append(makeDictaskInfo(onetaskInfo))
