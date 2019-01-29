@@ -6,6 +6,8 @@ from .application import user
 from .application import task
 
 
+
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ctb.views.home', name='home'),

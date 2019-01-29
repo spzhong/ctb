@@ -43,9 +43,9 @@ def wxAddCar(request):
     getcarNum = Comm.tryTranslate(request, "carNum")
     getadImgs = Comm.tryTranslate(request, "adImgs")
     if Comm.tryTranslateNull("carNum",getcarNum,callBackDict) == False:
-        return
+        return callBackDict
     if Comm.tryTranslateNull("adImgs", getadImgs, callBackDict) == False:
-        return
+        return callBackDict
     try:
         json.loads(getadImgs)
     except BaseException as e:
