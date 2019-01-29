@@ -27,7 +27,9 @@ def jurisdictGETOpenId(request,callBackDict):
         return userList[0]
     except BaseException as e:
         callBackDict['code'] = -1
-        callBackDict['msg'] = "系统异常"
+        callBackDict['msg'] = "用户异常"
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         return None
 
 
