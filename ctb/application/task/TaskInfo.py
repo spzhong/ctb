@@ -19,7 +19,12 @@ def wxGetJoinTask(request):
     userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
-    getTaskList = getTask.objects.filter(userId=userObj.userId,openId=userObj.openId)
+    try:
+        getTaskList = getTask.objects.filter(userId=userObj.userId, openId=userObj.openId)
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return Comm.callBackSuccess(callBackDict, 1, [])
     list = []
     for getTask in getTaskList:
         try:
