@@ -26,6 +26,8 @@ def wxgetCarList(request):
             list.append({"id":carInfo.id,"carNum":carInfo.carNum,"carModel":carInfo.carModel,"remark":carInfo.remark,"adImgs":imgsJosn})
         Comm.callBackSuccess(callBackDict, 1, list)
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         Comm.callBackFail(callBackDict,-1,"系统异常")
     return callBackDict
 
@@ -60,5 +62,7 @@ def wxAddCar(request):
         carInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, carInfoObj.id)
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         Comm.callBackFail(callBackDict,-1,"系统异常")
     return callBackDict

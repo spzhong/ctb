@@ -29,6 +29,8 @@ def wxegisterSign(request):
         userObj.save()
         Comm.callBackSuccess(callBackDict, 1, userObj.id)
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         Comm.callBackFail(callBackDict,-1,"系统异常")
     return callBackDict
 

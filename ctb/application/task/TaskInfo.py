@@ -68,5 +68,7 @@ def wxGetALLTask(request):
         Comm.callBackSuccess(callBackDict, 1, list)
     except BaseException as e:
         Comm.callBackFail(callBackDict,-1,"系统异常")
+        logger = logging.getLogger("django")
+        logger.info(str(e))
     return callBackDict
 
