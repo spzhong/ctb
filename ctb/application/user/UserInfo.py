@@ -27,7 +27,8 @@ def wxegisterSign(request):
         createTime = int(time.time() * 1000)
         if getopenId == '10000':
             userObj = user.objects.create(openId=getopenId, role=0, createTime=createTime)
-        userObj = user.objects.create(openId=getopenId, role=2, createTime=createTime)
+        else:
+            userObj = user.objects.create(openId=getopenId, role=2, createTime=createTime)
         userObj.save()
         Comm.callBackSuccess(callBackDict, 1, userObj.id)
     except BaseException as e:
