@@ -9,6 +9,8 @@ from ctb.models import user
 from ctb.models import carInfo
 from ctb.models import taskInfo
 from ctb.models import getTask
+from ctb.models import doTask
+
 from ..check import CheckInfo
 from .. import Comm
 from .. import Jurisdiction
@@ -84,6 +86,36 @@ def wxGetALLTask(request):
     return callBackDict
 
 
+
+
+# 获取所有提交过的任务信息
+def getUserAllDoTaskList(request):
+    getopenId = Comm.tryTranslate(request, "openId")
+    getuserId = Comm.tryTranslate(request, "userId")
+    if Comm.tryTranslateNull('openId', getopenId, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull('userId', getuserId, callBackDict) == False:
+        return callBackDict
+    # 查询当前永不所有提交的任务信息
+    doTaskList = doTask.objects.filter(userId=getuserId,openId=getopenId)
+    list = []
+    for doTaskObj in doTaskList:
+        dataDict = {}
+        dataDict["id"] = doTaskObj.id
+        dataDict["userId"] = doTaskObj.userId
+        dataDict["openId"] = doTaskObj.openId
+        dataDict["createTime"] = doTaskObj.createTime
+        dataDict["status"] = doTaskObj.status
+        dataDict["getTaskId"] = doTaskObj.getTaskId
+        dataDict["latitude"] = doTaskObj.latitude
+        dataDict["longitude"] = doTaskObj.longitude
+        dataDict["status"] = doTaskObj.status
+        try:
+            dataDict["adImgs"] = json.loads(doTaskObj.adImgs)
+        except BaseException as e:
+            dataDict["adImgs"] = []
+        list.append(dataDict)
+    return Comm.callBackSuccess(callBackDict, 1, list)
 
 
 # 领取任务
@@ -202,6 +234,7 @@ def adminCreateTask(request):
         logger = logging.getLogger("django")
         logger.info(str(e))
     return callBackDict
+
 
 
 # 删除任务

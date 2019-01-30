@@ -102,7 +102,10 @@ def getDoTaskInfo(request):
         dataDict["latitude"] = doTaskObj.latitude
         dataDict["longitude"] = doTaskObj.longitude
         dataDict["status"] = doTaskObj.status
-        dataDict["adImgs"] = json.loads(doTaskObj.adImgs)
+        try:
+            dataDict["adImgs"] = json.loads(doTaskObj.adImgs)
+        except BaseException as e:
+            dataDict["adImgs"] = []
         Comm.callBackSuccess(callBackDict, 1, dataDict)
     except BaseException as e:
         logger = logging.getLogger("django")
