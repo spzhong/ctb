@@ -60,7 +60,7 @@ def makeDictaskInfo(taskInfo):
      "activityRange": taskInfo.activityRange, "billingCycle": taskInfo.billingCycle,
      "collectionsNum": taskInfo.collectionsNum, "limitNum": taskInfo.limitNum, "priceMonth": taskInfo.priceMonth,
      "stickerArea": taskInfo.stickerArea, "deadline": taskInfo.deadline, "info": taskInfo.info,
-     "remark": taskInfo.remark,status:taskInfo.status, "adImgs": imgsJosn}
+     "remark": taskInfo.remark,"status":taskInfo.status, "adImgs": imgsJosn}
 
 
 
