@@ -8,7 +8,7 @@ from ctb.models import user
 from ctb.models import carInfo
 from .. import Comm
 from .. import Jurisdiction
-
+from ..check import CheckInfo
 
 
 # 获取用户的车辆信息
@@ -60,6 +60,8 @@ def wxAddCar(request):
         if getremark:
             carInfoObj.remark = getremark
         carInfoObj.save()
+        # 创建一条审核的任务
+        CheckInfo.createCheck(carInfoObj.id,1,userObj.id)
         Comm.callBackSuccess(callBackDict, 1, carInfoObj.id)
     except BaseException as e:
         logger = logging.getLogger("django")

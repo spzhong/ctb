@@ -11,7 +11,7 @@ from ctb.models import taskInfo
 from ctb.models import getTask
 from ctb.models import doTask
 from ctb.models import activityRange
-
+from ..check import CheckInfo
 
 from .. import Comm
 from .. import Jurisdiction
@@ -53,6 +53,8 @@ def wxdoTask(request):
                 return Comm.callBackFail(callBackDict, -1, "添加为经常活动的范围异常")
         # 保存领取的任务
         doTaskObj.save()
+        # 创建一条审核的任务
+        CheckInfo.createCheck(doTaskObj.id, 3, userObj.id)
         Comm.callBackSuccess(callBackDict, 1, doTaskObj.id)
     except BaseException as e:
         Comm.callBackFail(callBackDict,-1,"系统异常")

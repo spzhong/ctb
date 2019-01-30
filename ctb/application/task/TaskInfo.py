@@ -9,9 +9,10 @@ from ctb.models import user
 from ctb.models import carInfo
 from ctb.models import taskInfo
 from ctb.models import getTask
-
+from ..check import CheckInfo
 from .. import Comm
 from .. import Jurisdiction
+
 
 # 获取当前用户参与的任务
 def wxGetJoinTask(request):
@@ -118,6 +119,8 @@ def wxReceiveTask(request):
         # 任务领取的计数加一
         taskInfoObj.collectionsNum = taskInfoObj.collectionsNum + 1
         taskInfoObj.save()
+        # 创建一条审核的任务
+        CheckInfo.createCheck(taskInfoObj.id, 2, userObj.id)
         Comm.callBackSuccess(callBackDict, 1, getTaskObj.id)
     except BaseException as e:
         logger = logging.getLogger("django")

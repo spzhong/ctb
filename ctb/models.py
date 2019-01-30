@@ -17,7 +17,7 @@ class user(models.Model):
     outPutMoney = models.IntegerField(default=0)
 
 
-# 车辆信息
+# 车辆信息（审核）
 class carInfo(models.Model):
     userId = models.IntegerField(default=0,db_index=True)
     # 车牌号
@@ -27,6 +27,8 @@ class carInfo(models.Model):
     # 图片jsonString结构[]
     adImgs = models.CharField(max_length=1024,null=True)
     remark = models.CharField(max_length=1024,null=True)
+    # 当前任务的状态，0是提交审核，1是审核通过，2是审核失败，-1是已删除
+    status = models.IntegerField(default=0)
 
 
 # 用户活动范围记录
@@ -68,7 +70,7 @@ class taskInfo(models.Model):
     createTime = models.BigIntegerField(default=0)
 
 
-# 领取任务(一个任务，一个辆车只能领取一次)
+# 领取任务(一个任务，一个辆车只能领取一次)（审核）
 class getTask(models.Model):
     # 验证的用户信息
     userId = models.IntegerField(default=0, db_index=True)
@@ -84,7 +86,7 @@ class getTask(models.Model):
 
 
 
-# 做任务（至少两次，方才有效，动态扫描这个表，计算收入的流水）
+# 做任务（至少两次，方才有效，动态扫描这个表，计算收入的流水）（审核）
 class doTask(models.Model):
     # 验证的用户信息
     userId = models.IntegerField(default=0, db_index=True)
@@ -108,13 +110,13 @@ class incomeStream(models.Model):
     userId = models.IntegerField(default=0, db_index=True)
     openId = models.CharField(max_length=64, db_index=True)
     # 领取任务的ID
-    getTask = models.IntegerField(default=0, db_index=True)
+    getTaskId = models.IntegerField(default=0, db_index=True)
     createTime = models.BigIntegerField(default=0)
     # 收入的钱
     money = models.IntegerField(default=0)
 
 
-# 支出流水
+# 支出流水（审核）
 class outStream(models.Model):
     # 验证的用户信息
     userId = models.IntegerField(default=0, db_index=True)
@@ -136,5 +138,22 @@ class taskStream(models.Model):
     createTime = models.BigIntegerField(default=0)
     # 备注信息
     info = models.CharField(max_length=1024,null=True)
+
+
+# 审核记录
+class checkRecord(models.Model):
+    # 管理员
+    userId = models.IntegerField(default=0, db_index=True)
+    # 业务的ID
+    businessId = models.IntegerField(default=0, db_index=True)
+    # type 类型 0是审核创建的任务，1是审核车辆，2是审核领取任务，3是审核提交的任务，4是审核提现的任务
+    type = models.IntegerField(default=0)
+    # 标记是否是已处理,0是待处理，1是已经处理，2是业务异常，-1是删除
+    isDone  = models.BigIntegerField(default=0)
+    # 创建的时间
+    createTime = models.BigIntegerField(default=0)
+
+
+
 
 

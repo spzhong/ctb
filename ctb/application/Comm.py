@@ -37,6 +37,7 @@ def callBackSuccess(callBackDict,code,data):
     return callBackDict
 
 
+
 # 失败的回调
 def callBackFail(callBackDict,code,msg):
     callBackDict['code'] = code
