@@ -108,7 +108,7 @@ def wxReceiveTask(request):
             taskInfoObj = taskInfo.objects.get(id = getcarId)
         except BaseException as e:
             return Comm.callBackFail(callBackDict, -6, "该任务不存在")
-        if taskInfoObj.status == -1:t
+        if taskInfoObj.status == -1:
             return Comm.callBackFail(callBackDict, -7, "该任务已经删除")
         if taskInfoObj.collectionsNum == taskInfoObj.limitNum:
             return Comm.callBackFail(callBackDict, -8, "该任务已领取完")
