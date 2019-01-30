@@ -19,6 +19,8 @@ def index(request,route):
          callBackDict = CheckInfo.adminCheckDoTask(request)
     elif route == 'adminCheckOutStream':
          callBackDict = CheckInfo.adminCheckOutStream(request)
+    elif route == 'getALlAdminCheck':
+         callBackDict = CheckInfo.getALlAdminCheck(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))

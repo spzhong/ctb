@@ -39,6 +39,26 @@ def getStayAdminCheck(request):
     return callBackDict
 
 
+# 获取所有的审核任务
+def getALlAdminCheck(request):
+    callBackDict = {}
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    try:
+        getcheckRecordList = checkRecord.objects.all()
+        list = []
+        for oneRecord in getcheckRecordList:
+            list.append({"id": oneRecord.id, "businessId": oneRecord.businessId, "type": oneRecord.type,
+                         "isDone": oneRecord.isDone, "createTime": oneRecord.createTime})
+        return Comm.callBackSuccess(callBackDict, 1, list)
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return Comm.callBackFail(callBackDict, -1, "系统异常")
+    return callBackDict
+
 
 # 提交任务
 def submitCheck(request):
