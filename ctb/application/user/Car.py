@@ -108,3 +108,10 @@ def wxEditCar(request):
         logger.info(str(e))
         Comm.callBackFail(callBackDict,-1,"车辆信息不存在")
     return callBackDict
+
+
+
+
+
+
+
