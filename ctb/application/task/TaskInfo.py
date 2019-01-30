@@ -22,7 +22,7 @@ def wxGetJoinTask(request):
     if userObj == None:
         return callBackDict
     try:
-        getTaskList = getTask.objects.filter(userId=userObj.userId, openId=userObj.openId)
+        getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
@@ -100,7 +100,7 @@ def wxReceiveTask(request):
     if Comm.tryTranslateNull('carId', getcarId, callBackDict) == False:
         return callBackDict
     try:
-        getTaskList = getTask.objects.filter(userId=userObj.userId,carId = getcarId, openId=userObj.openId, taskId = gettaskId)
+        getTaskList = getTask.objects.filter(userId=userObj.id,carId = getcarId, openId=userObj.openId, taskId = gettaskId)
         if len(getTaskList) > 0:
             return  Comm.callBackFail(callBackDict, -5, "该任务已领取过")
         #判断该任务的剩余次数
@@ -114,7 +114,7 @@ def wxReceiveTask(request):
             return Comm.callBackFail(callBackDict, -8, "该任务已领取完")
         # 创建一条新的领取的任务
         getcreateTime = int(time.time() * 1000)
-        getTaskObj = getTask.objects.create(userId=userObj.userId, openId=userObj.openId, taskId = gettaskId , createTime=getcreateTime)
+        getTaskObj = getTask.objects.create(userId=userObj.id, openId=userObj.openId, taskId = gettaskId , createTime=getcreateTime)
         getTaskObj.save()
         # 任务领取的计数加一
         taskInfoObj.collectionsNum = taskInfoObj.collectionsNum + 1
