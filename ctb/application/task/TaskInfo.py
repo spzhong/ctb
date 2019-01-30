@@ -90,14 +90,18 @@ def wxGetALLTask(request):
 
 # 获取所有提交过的任务信息
 def getUserAllDoTaskList(request):
+    callBackDict = {}
     getopenId = Comm.tryTranslate(request, "openId")
     getuserId = Comm.tryTranslate(request, "userId")
+    getgettaskId = Comm.tryTranslate(request, "getTaskId")
     if Comm.tryTranslateNull('openId', getopenId, callBackDict) == False:
         return callBackDict
     if Comm.tryTranslateNull('userId', getuserId, callBackDict) == False:
         return callBackDict
+    if Comm.tryTranslateNull('getTaskId', getgettaskId, callBackDict) == False:
+        return callBackDict
     # 查询当前永不所有提交的任务信息
-    doTaskList = doTask.objects.filter(userId=getuserId,openId=getopenId)
+    doTaskList = doTask.objects.filter(userId=getuserId,openId=getopenId,getTaskId=getgettaskId)
     list = []
     for doTaskObj in doTaskList:
         dataDict = {}
