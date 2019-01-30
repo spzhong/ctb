@@ -105,7 +105,7 @@ def wxReceiveTask(request):
             return  Comm.callBackFail(callBackDict, -5, "该任务已领取过")
         #判断该任务的剩余次数
         try:
-            taskInfoObj = taskInfo.objects.get(id = getcarId)
+            taskInfoObj = taskInfo.objects.get(id = gettaskId)
         except BaseException as e:
             return Comm.callBackFail(callBackDict, -6, "该任务不存在")
         if taskInfoObj.status == -1:
