@@ -287,6 +287,8 @@ def judgeAuditStatusTaskId(taskId):
             return "任务已经删除"
         return None
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         return "任务不存在"
 
 
@@ -302,5 +304,7 @@ def judgeAuditStatusCarId(carId):
             return "车辆已经删除"
         return None
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         return "车辆不存在"
 
