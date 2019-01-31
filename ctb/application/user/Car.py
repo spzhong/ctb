@@ -23,7 +23,7 @@ def wxgetCarList(request):
         list = []
         for onecarInfo in carInfoList:
             imgsJosn = json.loads(onecarInfo.adImgs)
-            list.append({"id":onecarInfo.id,"carNum":onecarInfo.carNum,"carModel":onecarInfo.carModel,"remark":onecarInfo.remark,"adImgs":imgsJosn})
+            list.append({"status":onecarInfo.status,"id":onecarInfo.id,"carNum":onecarInfo.carNum,"carModel":onecarInfo.carModel,"remark":onecarInfo.remark,"adImgs":imgsJosn})
         Comm.callBackSuccess(callBackDict, 1, list)
     except BaseException as e:
         logger = logging.getLogger("django")
