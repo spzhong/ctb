@@ -119,10 +119,14 @@ def adminCheckCarInfo(request):
         checkRecordObj.isDone = getisDone;
         #处理自己的相关的业务员
         # 1是审核通过，1是审核失败
+        logger = logging.getLogger("django")
+        logger.info(str(getisDone))
         if getisDone == 1 or getisDone == 2:
             carInfoObject = carInfo.objects.get(id=checkRecordObj.businessId)
             carInfoObject.status = getisDone
             carInfoObject.save()
+            logger.info("进入了")
+        logger.info("------------")
         # 保存审核记录的状态
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict,1,checkRecordObj.id)
