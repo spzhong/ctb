@@ -64,7 +64,6 @@ def getGetTaskInfo(request):
         dataDict["openId"] = getTaskObj.openId
         dataDict["createTime"] = getTaskObj.createTime
         dataDict["status"] = getTaskObj.status
-        dataDict["startdoTaskTime"] = getTaskObj.startdoTaskTime
         Comm.callBackSuccess(callBackDict,1,dataDict)
     except BaseException as e:
         logger = logging.getLogger("django")

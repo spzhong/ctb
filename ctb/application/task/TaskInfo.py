@@ -10,7 +10,7 @@ from ctb.models import carInfo
 from ctb.models import taskInfo
 from ctb.models import getTask
 from ctb.models import doTask
-
+from ctb.models import incomeStream
 from ..check import CheckInfo
 
 from .. import Comm
@@ -24,32 +24,27 @@ def wxGetJoinTask(request):
     userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
-    try:
-        getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
-    except BaseException as e:
-        logger = logging.getLogger("django")
-        logger.info(str(e))
-        Comm.callBackSuccess(callBackDict, 1, [])
-        return callBackDict
+    # 领取审核通过的数据
+    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId,status=1)
     list = []
     for onegetTask in getTaskList:
-        try:
-            carInfoObj = carInfo.objects.get(id = onegetTask.carId)
-        except BaseException as e:
-            carInfoObj = None
-        try:
-            taskInfoObj = taskInfo.objects.get(id = onegetTask.taskId)
-        except BaseException as e:
-            taskInfoObj = None
-        dict = {"id":onegetTask.id,"carId":onegetTask.carId,"taskId":onegetTask.taskId,"createTime":onegetTask.createTime,"status":onegetTask.status,"startdoTaskTime":onegetTask.startdoTaskTime}
-        if carInfoObj:
-            dict['carInfo'] = {"id":carInfoObj.id,"carNum":carInfoObj.carNum,"carModel":carInfoObj.carModel,"remark":carInfoObj.remark,"adImgs":json.loads(carInfoObj.adImgs)}
-        if taskInfoObj:
-            dict['taskInfo'] = makeDictaskInfo(taskInfoObj)
+        dict = {}
+        # 查询未完成的订单
+        dict["id"] = onegetTask.id
+        dict["carId"] = onegetTask.carId
+        dict["taskId"] = onegetTask.taskId
+        incomeStreamList = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId,getTaskId=onegetTask.id, status=0).order_by("-createTime")
+        # 没有产生任何的订单
+        if len(incomeStreamList)==0:
+            dict['billingCycle'] = 0
+            continue
+        dict['billingCycle'] = incomeStreamList[0].createTime
         list.append(dict)
     # 组装完数据的回调
     Comm.callBackSuccess(callBackDict, 1, list)
     return callBackDict
+
+
 
 
 
