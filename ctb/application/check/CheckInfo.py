@@ -121,7 +121,7 @@ def adminCheckCarInfo(request):
         # 1是审核通过，1是审核失败
         logger = logging.getLogger("django")
         logger.info(str(getisDone))
-        if getisDone == 1 or getisDone == 2:
+        if getisDone == "1" or getisDone == "2":
             carInfoObject = carInfo.objects.get(id=checkRecordObj.businessId)
             carInfoObject.status = getisDone
             carInfoObject.save()
