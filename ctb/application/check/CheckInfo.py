@@ -198,6 +198,7 @@ def adminCheckDoTask(request):
         # 1是审核通过，1是审核失败
         if getisDone == "1" or getisDone == "2":
             doTaskObject = doTask.objects.get(id=checkRecordObj.businessId)
+            doTaskObject.createTime = int(time.time() * 1000)
             # 审核通过的逻辑，创建一条的流水
             if getisDone == "1":
                 # 判断是否审核失败了
