@@ -78,6 +78,10 @@ def reviewofPayments(request):
         logger = logging.getLogger("django")
         logger.info(str(e))
         return  Comm.callBackFail(callBackDict, -1, "系统异常")
+
+    logger = logging.getLogger("django")
+    logger.info(str(incomeStreammoney))
+
     # 综述的回调
     if incomeStreammoney["money__Sum"] == None:
         incomeStreammoneyInt = 0
@@ -88,7 +92,6 @@ def reviewofPayments(request):
         outcomeStreammoneyInt = 0
     else:
         outcomeStreammoneyInt = int(outcomeStreammoney["money__Sum"])
-
     if futureMoney["money__Sum"] == None:
         futureMoneyInt = 0
     else:
