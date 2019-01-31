@@ -257,6 +257,15 @@ def createIncomeStream(checkRecordObj,doTaskObject):
                 unfinishedincomeStream.endTime = doTaskObject.createTime
                 unfinishedincomeStream.status = 1  # 审核通过的流水
                 unfinishedincomeStream.save()
+                # 同时判断一下是否要继续下一个的周期
+                # --------暂时不处理---------
+                # 同时判断一下是否要继续下一个的周期
+                newIncomeStreamObj = incomeStream.objects.create(userId=doTaskObject.userId, openId=doTaskObject.openId,
+                                                              getTaskId=doTaskObject.getTaskId,
+                                                              checkRecordId=checkRecordObj.id, status=0)
+                newIncomeStreamObj.createTime = doTaskObject.createTime
+                newIncomeStreamObj.money = taskInfoObj.priceMonth
+                newIncomeStreamObj.save()
             except BaseException as e:
                 logger = logging.getLogger("django")
                 logger.info("createIncomeStream  更新流水失败" + str(e))
