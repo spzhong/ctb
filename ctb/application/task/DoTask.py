@@ -44,6 +44,9 @@ def wxdoTask(request):
             catMsg = TaskInfo.judgeAuditStatusCarId(getTaskObj.carId)
             if catMsg != None:
                 return Comm.callBackFail(callBackDict, -1, catMsg)
+            getgetTaskMsg = TaskInfo.judgeAuditStatusgetTaskObj(getgetTaskId)
+            if getgetTaskMsg != None:
+                return Comm.callBackFail(callBackDict, -1, getgetTaskMsg)
         except BaseException as e:
             return Comm.callBackFail(callBackDict, -1, "领取任务的ID不存在")
         getcreateTime  = int(time.time() * 1000)

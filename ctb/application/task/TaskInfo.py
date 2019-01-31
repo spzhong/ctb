@@ -277,8 +277,6 @@ def judgeAuditStatusTaskId(taskId):
         taskInfoObj = taskInfo.objects.get(id=taskId)
         if taskInfoObj.status == 0:
             return "任务还未审核通过"
-        if taskInfoObj.status == 1:
-            return None
         if taskInfoObj.status == 3:
             return "任务已经领取完"
         if taskInfoObj.status == 4:
@@ -290,6 +288,26 @@ def judgeAuditStatusTaskId(taskId):
         logger = logging.getLogger("django")
         logger.info(str(e))
         return "任务不存在"
+
+        # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
+        status = models.IntegerField(default=0)
+
+
+# 判断该任务是否已领取过了
+def judgeAuditStatusgetTaskObj(getTaskId):
+    try:
+        getTaskObj = getTask.objects.get(id=getTaskId)
+        if getTaskObj.status == 0:
+            return "领取任务还未审核通过"
+        if getTaskObj.status == 2:
+            return "领取任务审核不通过"
+        if getTaskObj.status == -1:
+            return "领取任务已经删除"
+        return None
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+    return "领取的任务ID不存在"
 
 
 # 判断车辆信息是否审核通过了
