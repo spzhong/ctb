@@ -298,9 +298,9 @@ def judgeAuditStatusCarId(carId):
         carIdObj = carInfo.objects.get(id=carId)
         if carIdObj.status == 0:
             return "车辆还未审核通过"
-        if taskInfoObj.status == 2:
+        if carIdObj.status == 2:
             return "车辆审核失败"
-        if taskInfoObj.status == -1:
+        if carIdObj.status == -1:
             return "车辆已经删除"
         return None
     except BaseException as e:
