@@ -13,7 +13,6 @@ from ctb.models import doTask
 from ctb.models import checkRecord
 from ctb.models import outStream
 from ctb.models import incomeStream
-from ..task import TaskInfo
 
 from .. import Comm
 from .. import Jurisdiction
@@ -161,10 +160,10 @@ def adminCheckGetTask(request):
         if getisDone == "1" or getisDone == "2":
             getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
             # 判断车辆和任务的审核状态
-            taskMsg = TaskInfo.judgeAuditStatusTaskId(getTaskObject.taskId)
+            taskMsg = judgeAuditStatusTaskId(getTaskObject.taskId)
             if taskMsg != None:
                 return Comm.callBackFail(callBackDict, -1, "[审核失败]"+taskMsg)
-            catMsg = TaskInfo.judgeAuditStatusCarId(getTaskObject.carId)
+            catMsg = judgeAuditStatusCarId(getTaskObject.carId)
             if catMsg != None:
                 return Comm.callBackFail(callBackDict, -1, "[审核失败]"+catMsg)
             getTaskObject.status = getisDone
@@ -299,3 +298,62 @@ def adminCheckOutStream(request):
         logger.info(str(e))
         return Comm.callBackFail(callBackDict, -1, "系统异常")
     return callBackDict
+
+
+
+
+
+# 判断该任务是否已经审核通过了
+def judgeAuditStatusTaskId(taskId):
+    try:
+        taskInfoObj = taskInfo.objects.get(id=taskId)
+        if taskInfoObj.status == 0:
+            return "任务还未审核通过"
+        if taskInfoObj.status == 3:
+            return "任务已经领取完"
+        if taskInfoObj.status == 4:
+            return "任务已经截止"
+        if taskInfoObj.status == -1:
+            return "任务已经删除"
+        return None
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return "任务不存在"
+
+        # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
+        status = models.IntegerField(default=0)
+
+
+# 判断该任务是否已领取过了
+def judgeAuditStatusgetTaskObj(getTaskId):
+    try:
+        getTaskObj = getTask.objects.get(id=getTaskId)
+        if getTaskObj.status == 0:
+            return "领取的任务还未审核通过"
+        if getTaskObj.status == 2:
+            return "领取的任务审核不通过"
+        if getTaskObj.status == -1:
+            return "领取的任务已经删除"
+        return None
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+    return "领取的任务ID不存在"
+
+
+# 判断车辆信息是否审核通过了
+def judgeAuditStatusCarId(carId):
+    try:
+        carIdObj = carInfo.objects.get(id=carId)
+        if carIdObj.status == 0:
+            return "车辆还未审核通过"
+        if carIdObj.status == 2:
+            return "车辆审核失败"
+        if carIdObj.status == -1:
+            return "车辆已经删除"
+        return None
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return "车辆不存在"

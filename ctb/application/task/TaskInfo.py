@@ -12,6 +12,7 @@ from ctb.models import getTask
 from ctb.models import doTask
 
 from ..check import CheckInfo
+
 from .. import Comm
 from .. import Jurisdiction
 
