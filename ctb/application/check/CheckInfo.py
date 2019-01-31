@@ -157,7 +157,7 @@ def adminCheckGetTask(request):
         checkRecordObj.isDone = getisDone;
         # 处理自己的相关的业务员
         # 1是审核通过，1是审核失败
-        if getisDone == 1 or getisDone == 2:
+        if getisDone == "1" or getisDone == "2":
             getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
             getTaskObject.status = getisDone
             getTaskObject.save()
@@ -189,10 +189,10 @@ def adminCheckDoTask(request):
         checkRecordObj.isDone = getisDone;
         # 处理自己的相关的业务员
         # 1是审核通过，1是审核失败
-        if getisDone == 1 or getisDone == 2:
+        if getisDone == "1" or getisDone == "2":
             doTaskObject = doTask.objects.get(id=checkRecordObj.businessId)
             # 审核通过的逻辑，创建一条的流水
-            if getisDone == 1:
+            if getisDone == "1":
                 # 判断是否审核失败了
                 if createIncomeStream(checkRecordObj, doTaskObject) == False:
                     doTaskObject.status = 2
@@ -280,7 +280,7 @@ def adminCheckOutStream(request):
         checkRecordObj.isDone = getisDone;
         # 处理自己的相关的业务员
         # 1是审核通过，1是审核失败
-        if getisDone == 1 or getisDone == 2:
+        if getisDone == "1" or getisDone == "2":
             outStreamObject = outStream.objects.get(id=checkRecordObj.businessId)
             outStreamObject.status = getisDone
             outStreamObject.save()
