@@ -79,6 +79,9 @@ def reviewofPayments(request):
         logger.info(str(e))
         return  Comm.callBackFail(callBackDict, -1, "系统异常")
     # 综述的回调
-    balance = incomeStreammoney - outcomeStreammoney
-    return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoney,"alreadyMoney":incomeStreammoney,"payMoney":outcomeStreammoney,"balance":balance})
+    #balance = incomeStreammoney - outcomeStreammoney
+    logger = logging.getLogger("django")
+    logger.info(str(incomeStreammoney))
+    logger.info(str(outcomeStreammoney))
+    return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoney,"alreadyMoney":incomeStreammoney,"payMoney":outcomeStreammoney,"balance":0})
 
