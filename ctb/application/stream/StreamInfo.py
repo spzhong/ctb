@@ -83,19 +83,19 @@ def reviewofPayments(request):
     logger.info(str(incomeStreammoney))
 
     # 综述的回调
-    if incomeStreammoney["money__Sum"] == None:
+    if incomeStreammoney["money__sum"] == None:
         incomeStreammoneyInt = 0
     else:
-        incomeStreammoneyInt = int(incomeStreammoney["money__Sum"])
+        incomeStreammoneyInt = int(incomeStreammoney["money__sum"])
 
-    if outcomeStreammoney["money__Sum"] == None:
+    if outcomeStreammoney["money__sum"] == None:
         outcomeStreammoneyInt = 0
     else:
-        outcomeStreammoneyInt = int(outcomeStreammoney["money__Sum"])
-    if futureMoney["money__Sum"] == None:
+        outcomeStreammoneyInt = int(outcomeStreammoney["money__sum"])
+    if futureMoney["money__sum"] == None:
         futureMoneyInt = 0
     else:
-        futureMoneyInt = int(futureMoney["money__Sum"])
+        futureMoneyInt = int(futureMoney["money__sum"])
     balance = incomeStreammoneyInt - outcomeStreammoneyInt
     return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoneyInt,"alreadyMoney":incomeStreammoneyInt,"payMoney":outcomeStreammoneyInt,"balance":balance})
 

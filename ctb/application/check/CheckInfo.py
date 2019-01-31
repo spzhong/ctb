@@ -252,7 +252,7 @@ def createIncomeStream(checkRecordObj,doTaskObject):
         # 获取当前的信息的流水
         unfinishedincomeStream = incomeStreamList[0]
         # 如果超过了28天就算有效的数据
-        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 0: #28*24*3600*1000:
+        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 1000*60*3: #28*24*3600*1000:
             try:
                 unfinishedincomeStream.endTime = doTaskObject.createTime
                 unfinishedincomeStream.status = 1  # 审核通过的流水
