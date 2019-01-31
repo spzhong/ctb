@@ -298,11 +298,11 @@ def judgeAuditStatusgetTaskObj(getTaskId):
     try:
         getTaskObj = getTask.objects.get(id=getTaskId)
         if getTaskObj.status == 0:
-            return "领取任务还未审核通过"
+            return "领取的任务还未审核通过"
         if getTaskObj.status == 2:
-            return "领取任务审核不通过"
+            return "领取的任务审核不通过"
         if getTaskObj.status == -1:
-            return "领取任务已经删除"
+            return "领取的任务已经删除"
         return None
     except BaseException as e:
         logger = logging.getLogger("django")

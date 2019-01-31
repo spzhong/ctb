@@ -13,7 +13,7 @@ from ctb.models import doTask
 from ctb.models import checkRecord
 from ctb.models import outStream
 from ctb.models import incomeStream
-
+from ..task import TaskInfo
 
 from .. import Comm
 from .. import Jurisdiction
@@ -58,6 +58,7 @@ def getALlAdminCheck(request):
         logger.info(str(e))
         return Comm.callBackFail(callBackDict, -1, "系统异常")
     return callBackDict
+
 
 
 # 提交任务
@@ -159,6 +160,13 @@ def adminCheckGetTask(request):
         # 1是审核通过，1是审核失败
         if getisDone == "1" or getisDone == "2":
             getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
+            # 判断车辆和任务的审核状态
+            taskMsg = TaskInfo.judgeAuditStatusTaskId(getTaskObject.taskId)
+            if taskMsg != None:
+                return Comm.callBackFail(callBackDict, -1, "[审核失败]"+taskMsg)
+            catMsg = TaskInfo.judgeAuditStatusCarId(getTaskObject.carId)
+            if catMsg != None:
+                return Comm.callBackFail(callBackDict, -1, "[审核失败]"+catMsg)
             getTaskObject.status = getisDone
             getTaskObject.save()
         checkRecordObj.save()
