@@ -81,8 +81,6 @@ class getTask(models.Model):
     createTime = models.BigIntegerField(default=0)
     # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
     status = models.IntegerField(default=0)
-    # 开始任务的时间
-    startdoTaskTime = models.BigIntegerField(default=0)
 
 
 
@@ -104,16 +102,25 @@ class doTask(models.Model):
     status = models.IntegerField(default=0)
 
 
+
 # 收入流水(后台定时调度任务执行的)
 class incomeStream(models.Model):
     # 验证的用户信息
     userId = models.IntegerField(default=0, db_index=True)
     openId = models.CharField(max_length=64, db_index=True)
+    # 审核的任务
+    checkRecordId = models.IntegerField(default=0, db_index=True)
     # 领取任务的ID
     getTaskId = models.IntegerField(default=0, db_index=True)
-    createTime = models.BigIntegerField(default=0)
     # 收入的钱
     money = models.IntegerField(default=0)
+    # 审核后的开始周期
+    createTime = models.BigIntegerField(default=0)
+    # 审核后的结束周期
+    endTime = models.BigIntegerField(default=0)
+    # 当前任务的状态，0是未完成的流水，1是已完成的流水，2是异常的流水，-1是删除的流水
+    status = models.BigIntegerField(default=0)
+
 
 
 # 支出流水（审核）
@@ -121,8 +128,9 @@ class outStream(models.Model):
     # 验证的用户信息
     userId = models.IntegerField(default=0, db_index=True)
     openId = models.CharField(max_length=64, db_index=True)
-    # 领取任务的ID
-    getTaskId = models.IntegerField(default=0, db_index=True)
+    # 审核的任务
+    checkRecordId = models.IntegerField(default=0, db_index=True)
+    # 支出的时间
     createTime = models.BigIntegerField(default=0)
     # 支出的钱
     money = models.IntegerField(default=0)

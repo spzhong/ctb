@@ -187,9 +187,19 @@ def adminCheckDoTask(request):
         # 1是审核通过，1是审核失败
         if getisDone == 1 or getisDone == 2:
             doTaskObject = doTask.objects.get(id=checkRecordObj.businessId)
+            # 审核通过的逻辑，创建一条的流水
+            if getisDone == 1:
+                # 判断是否审核失败了
+                if createIncomeStream(checkRecordObj, doTaskObject) == False:
+                    doTaskObject.status = 2
+                    checkRecordObj.isDone = 2
+                    checkRecordObj.save()
+                    doTaskObject.save()
+                    return Comm.callBackFail(callBackDict, -1, "审核失败")
+            # 更新当前任务的状态
             doTaskObject.status = getisDone
             doTaskObject.save()
-            createIncomeStream(checkRecordObj,doTaskObject,getisDone)
+        # 保存审核记录的任务
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict, 1, checkRecordObj.id)
     except BaseException as e:
@@ -202,42 +212,49 @@ def adminCheckDoTask(request):
 
 
 # 审核做的任务--如果是第二次的话，创建收入的记录
-def createIncomeStream(checkRecordObj,doTaskObject,getisDone):
-    # 审核失败
-    if getisDone == 2:
-        return
-    # 审核通过的 - doTaskObject- 查询出来，审核通过2的数据，之间的差
-    doTaskList = doTask.objects.filter(userId=doTaskObject.userId,openId=doTaskObject.openId,getTaskId=doTaskObject.getTaskId,status=1)
-    if len(doTaskList) == 0:
-        return
-    # 取得第一条的数据，判断其时间
-    theFisrtDoTask = doTaskList[0]
-    if theFisrtDoTask == None:
-        return
+def createIncomeStream(checkRecordObj,doTaskObject):
+    # 查询任务的详情
     try:
-        # 更新结算日
         getTaskObj = getTask.objects.get(id=doTaskObject.getTaskId)
-        getTaskObj.startdoTaskTime = theFisrtDoTask.createTime
-        getTaskObj.save()
-        # 获取具体的任务详情
         taskInfoObj = taskInfo.objects.get(id=getTaskObj.taskId)
-        if taskInfoObj.status == -1:
-            # 已经删除了，就不在产生订单了
-            return
-        # 取得交易的结算日--异常的数据
-        if theFisrtDoTask.createTime > taskInfoObj.deadline:
-            # 任务已经超过截止的时间了，就不在产生订单了
-            return
-        # --查询最后一条的订单，按照时间倒叙排序
-        incomeStreamList = incomeStream.objects.filter(userId=getTaskObj.userId,openId=getTaskObj.openId,getTaskId=getTaskObj.id).order_by("-createTime")[:1]
-        theLastTime = doTaskObject.createTime
-        if len(incomeStreamList) == 0:
-            return
-        # 最后的时间
-        theLastTime = incomeStreamList[0].createTime
     except BaseException as e:
         logger = logging.getLogger("django")
-        logger.info(str(e))
+        logger.info("createIncomeStream 查询任务的详情失败" + str(e))
+        return False
+    # 首先查询当前用户的流水情况（是否有未完成的流水）
+    incomeStreamList = incomeStream.objects.filter(userId=doTaskObject.userId, openId=doTaskObject.openId,
+                                                   getTaskId=doTaskObject.getTaskId,status=0).order_by("-createTime")
+    if len(incomeStreamList) == 0:
+        try:
+            # 创建一条新的流水
+            incomeStreamObj = incomeStream.objects.create(userId=doTaskObject.userId, openId=doTaskObject.openId,
+                                                          getTaskId=doTaskObject.getTaskId,
+                                                          checkRecordId=checkRecordObj.id, status=0)
+            incomeStreamObj.createTime = doTaskObject.createTime
+            incomeStreamObj.money = taskInfoObj.priceMonth
+            incomeStreamObj.save()
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info("createIncomeStream 创建一条新的流水失败" + str(e))
+            return False
+    else:
+        # 获取当前的信息的流水
+        unfinishedincomeStream = incomeStreamList[0]
+        # 如果超过了28天就算有效的数据
+        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 28*24*3600*1000:
+            try:
+                unfinishedincomeStream.endTime = doTaskObject.createTime
+                unfinishedincomeStream.status = 1  # 审核通过的流水
+                unfinishedincomeStream.save()
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info("createIncomeStream  更新流水失败" + str(e))
+                return False
+        else:
+            logger = logging.getLogger("django")
+            logger.info("createIncomeStream 更新流水失败，审核是失败的，没有到一个更新的周期")
+            return False
+    return True
 
 
 
