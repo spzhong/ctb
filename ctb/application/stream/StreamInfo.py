@@ -79,7 +79,20 @@ def reviewofPayments(request):
         logger.info(str(e))
         return  Comm.callBackFail(callBackDict, -1, "系统异常")
     # 综述的回调
-    balance = incomeStreammoney["money__avg"] - outcomeStreammoney["money__avg"]
+    if incomeStreammoney["money__avg"] == None:
+        incomeStreammoneyInt = 0
+    else:
+        incomeStreammoneyInt = int(incomeStreammoney["money__avg"])
 
-    return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoney['money__avg'],"alreadyMoney":incomeStreammoney['money__avg'],"payMoney":outcomeStreammoney['money__avg'],"balance":balance})
+    if outcomeStreammoney["money__avg"] == None:
+        outcomeStreammoneyInt = 0
+    else:
+        outcomeStreammoneyInt = int(outcomeStreammoney["money__avg"])
+
+    if futureMoney["money__avg"] == None:
+        futureMoneyInt = 0
+    else:
+        futureMoneyInt = int(futureMoney["money__avg"])
+    balance = incomeStreammoneyInt - outcomeStreammoneyInt
+    return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoneyInt,"alreadyMoney":incomeStreammoneyInt,"payMoney":outcomeStreammoneyInt,"balance":balance})
 
