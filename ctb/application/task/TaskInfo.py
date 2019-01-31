@@ -135,6 +135,13 @@ def wxReceiveTask(request):
         return callBackDict
     if Comm.tryTranslateNull('carId', getcarId, callBackDict) == False:
         return callBackDict
+    #判断车辆和任务的审核状态
+    taskMsg = judgeAuditStatusTaskId(gettaskId)
+    if taskMsg != None:
+        return Comm.callBackFail(callBackDict, -1, taskMsg)
+    catMsg = judgeAuditStatusCarId(getcarId)
+    if catMsg != None:
+        return Comm.callBackFail(callBackDict, -1, catMsg)
     try:
         getTaskList = getTask.objects.filter(userId=userObj.id,carId = getcarId, openId=userObj.openId, taskId = gettaskId)
         if len(getTaskList) > 0:
@@ -261,3 +268,39 @@ def adminDelTask(request):
         logger = logging.getLogger("django")
         logger.info(str(e))
     return callBackDict
+
+
+
+# 判断该任务是否已经审核通过了
+def judgeAuditStatusTaskId(taskId):
+    try:
+        taskInfoObj = taskInfo.objects.get(id=taskId)
+        if taskInfoObj.status == 0:
+            return "任务还未审核通过"
+        if taskInfoObj.status == 1:
+            return None
+        if taskInfoObj.status == 3:
+            return "任务已经领取完"
+        if taskInfoObj.status == 4:
+            return "任务已经截止"
+        if taskInfoObj.status == -1:
+            return "任务已经删除"
+        return None
+    except BaseException as e:
+        return "任务不存在"
+
+
+# 判断车辆信息是否审核通过了
+def judgeAuditStatusCarId(carId):
+    try:
+        carIdObj = carInfo.objects.get(id=carId)
+        if carIdObj.status == 0:
+            return "车辆还未审核通过"
+        if taskInfoObj.status == 2:
+            return "车辆审核失败"
+        if taskInfoObj.status == -1:
+            return "车辆已经删除"
+        return None
+    except BaseException as e:
+        return "车辆不存在"
+

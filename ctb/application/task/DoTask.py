@@ -15,6 +15,7 @@ from ..check import CheckInfo
 
 from .. import Comm
 from .. import Jurisdiction
+import TaskInfo
 
 
 
@@ -36,8 +37,15 @@ def wxdoTask(request):
     try:
         try:
             getTaskObj = getTask.objects.get(id=getgetTaskId)
+            # 判断车辆和任务的审核状态
+            taskMsg = TaskInfo.judgeAuditStatusTaskId(getTaskObj.taskId)
+            if taskMsg != None:
+                return Comm.callBackFail(callBackDict, -1, taskMsg)
+            catMsg = TaskInfo.judgeAuditStatusCarId(getTaskObj.carId)
+            if catMsg != None:
+                return Comm.callBackFail(callBackDict, -1, catMsg)
         except BaseException as e:
-            return Comm.callBackFail(callBackDict, -1, "领取的任务的ID不存在")
+            return Comm.callBackFail(callBackDict, -1, "领取任务的ID不存在")
         getcreateTime  = int(time.time() * 1000)
         doTaskObj = doTask.objects.create(userId = userObj.id,openId = userObj.openId,getTaskId=getgetTaskId,adImgs=getadImgs,createTime=getcreateTime)
         if getlatitude and getlongitude:
