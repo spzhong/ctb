@@ -290,9 +290,6 @@ def judgeAuditStatusTaskId(taskId):
         logger.info(str(e))
         return "任务不存在"
 
-        # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
-        status = models.IntegerField(default=0)
-
 
 # 判断该任务是否已领取过了
 def judgeAuditStatusgetTaskObj(getTaskId):

@@ -252,7 +252,7 @@ def createIncomeStream(checkRecordObj,doTaskObject):
         # 获取当前的信息的流水
         unfinishedincomeStream = incomeStreamList[0]
         # 如果超过了28天就算有效的数据
-        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 28*24*3600*1000:
+        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 0: #28*24*3600*1000:
             try:
                 unfinishedincomeStream.endTime = doTaskObject.createTime
                 unfinishedincomeStream.status = 1  # 审核通过的流水
@@ -321,8 +321,6 @@ def judgeAuditStatusTaskId(taskId):
         logger.info(str(e))
         return "任务不存在"
 
-        # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
-        status = models.IntegerField(default=0)
 
 
 # 判断该任务是否已领取过了
