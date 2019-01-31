@@ -4,7 +4,7 @@ from django.http import HttpResponse
 import json
 import time
 import sys
-from django.db.models import Avg
+from django.db.models import Sum
 from ctb.models import user
 sys.path.append('...')
 from ctb.models import incomeStream
@@ -60,39 +60,39 @@ def reviewofPayments(request):
         return callBackDict
     try:
         futureMoney = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId, status=0).aggregate(
-            Avg("money"))
+            Sum("money"))
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
         return Comm.callBackFail(callBackDict, -1, "系统异常")
     try:
         incomeStreammoney = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId, status=1).aggregate(
-            Avg("money"))
+            Sum("money"))
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
         return Comm.callBackFail(callBackDict, -1, "系统异常")
     try:
-        outcomeStreammoney = outStream.objects.filter(userId=userObj.id, openId=userObj.openId).aggregate(Avg("money"))
+        outcomeStreammoney = outStream.objects.filter(userId=userObj.id, openId=userObj.openId).aggregate(Sum("money"))
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
         return  Comm.callBackFail(callBackDict, -1, "系统异常")
     # 综述的回调
-    if incomeStreammoney["money__avg"] == None:
+    if incomeStreammoney["money__Sum"] == None:
         incomeStreammoneyInt = 0
     else:
-        incomeStreammoneyInt = int(incomeStreammoney["money__avg"])
+        incomeStreammoneyInt = int(incomeStreammoney["money__Sum"])
 
-    if outcomeStreammoney["money__avg"] == None:
+    if outcomeStreammoney["money__Sum"] == None:
         outcomeStreammoneyInt = 0
     else:
-        outcomeStreammoneyInt = int(outcomeStreammoney["money__avg"])
+        outcomeStreammoneyInt = int(outcomeStreammoney["money__Sum"])
 
-    if futureMoney["money__avg"] == None:
+    if futureMoney["money__Sum"] == None:
         futureMoneyInt = 0
     else:
-        futureMoneyInt = int(futureMoney["money__avg"])
+        futureMoneyInt = int(futureMoney["money__Sum"])
     balance = incomeStreammoneyInt - outcomeStreammoneyInt
     return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoneyInt,"alreadyMoney":incomeStreammoneyInt,"payMoney":outcomeStreammoneyInt,"balance":balance})
 
