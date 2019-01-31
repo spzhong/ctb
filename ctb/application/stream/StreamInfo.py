@@ -32,7 +32,7 @@ def getIncomeStreamList(request):
     list = []
     for oneincomeStream in incomeStreamList:
         list.append({"id":oneincomeStream.id,"checkRecordId":oneincomeStream.checkRecordId,"getTaskId":oneincomeStream.getTaskId,"money":oneincomeStream.money,"createTime":oneincomeStream.createTime,"endTime":oneincomeStream.endTime,"status":oneincomeStream.status})
-    Comm.callBackSuccess(callBackDict, 1, list)
+    return  Comm.callBackSuccess(callBackDict, 1, list)
 
 
 
@@ -48,7 +48,7 @@ def getoutStreamList(request):
     for oneoutStream in outStreamList:
         list.append({"id":oneoutStream.id,"checkRecordId": oneoutStream.checkRecordId,
                      "money": oneoutStream.money, "createTime": oneoutStream.createTime})
-    Comm.callBackSuccess(callBackDict, 1, list)
+    return Comm.callBackSuccess(callBackDict, 1, list)
 
 
 # 收支概述
@@ -79,5 +79,6 @@ def reviewofPayments(request):
         logger.info(str(e))
         return  Comm.callBackFail(callBackDict, -1, "系统异常")
     # 综述的回调
-    Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoney,"alreadyMoney":incomeStreammoney,"payMoney":outcomeStreammoney,"balance":incomeStreammoney-outcomeStreammoney})
+    balance = incomeStreammoney - outcomeStreammoney
+    return Comm.callBackSuccess(callBackDict, 1, {"futureMoney":futureMoney,"alreadyMoney":incomeStreammoney,"payMoney":outcomeStreammoney,"balance":balance})
 
