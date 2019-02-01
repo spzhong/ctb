@@ -39,3 +39,16 @@ def wxegisterSign(request):
 
 
 
+# 查询所有的用户
+def adminGetAllUsers(request):
+    # 取得获取的值
+    callBackDict = {}
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    userList = user.objects.all()
+    list = []
+    for oneuser in userList:
+        list.append({"id":oneuser.id,"openId":oneuser.openId,"name":oneuser.name,"phone":oneuser.phone,"role":oneuser.role})
+    return Comm.callBackSuccess(callBackDict, 1, list)
