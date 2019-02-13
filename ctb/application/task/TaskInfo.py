@@ -83,6 +83,26 @@ def wxGetALLTask(request):
 
 
 
+# wxGetTaskInfo
+def wxGetTaskInfo(request):
+    callBackDict = {}
+    gettaskId = Comm.tryTranslate(request, "taskId")
+    if Comm.tryTranslateNull('taskId', gettaskId, callBackDict) == False:
+        return callBackDict
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    try:
+        onetaskInfo = taskInfo.objects.get(id=gettaskId)
+        Comm.callBackSuccess(callBackDict, 1, makeDictaskInfo(onetaskInfo))
+    except BaseException as e:
+        Comm.callBackFail(callBackDict,-1,"系统异常")
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+    return callBackDict
+
+
 
 # 获取所有提交过的任务信息
 def getUserAllDoTaskList(request):

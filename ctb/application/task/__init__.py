@@ -23,6 +23,8 @@ def index(request,route):
         callBackDict = TaskInfo.adminDelTask(request)
     elif route == 'getUserAllDoTaskList':
         callBackDict = TaskInfo.getUserAllDoTaskList(request)
+    elif route == 'wxGetTaskInfo':
+        callBackDict = TaskInfo.wxGetTaskInfo(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))
