@@ -29,12 +29,13 @@ def wxGetJoinTask(request):
     logger.info("userId:"+str(userObj.id))
     logger.info("openId:" + str(userObj.openId))
     try:
-        getTaskList = getTask.objects.filter(userId=userObj.id)
+        getTaskList = getTask.objects.all()
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
         return Comm.callBackFail(callBackDict,-1,"暂无数据")
     list = []
+    logger.info("len:" + str(len(getTaskList)))
     for onegetTask in getTaskList:
         dict = {}
         # 查询未完成的订单
