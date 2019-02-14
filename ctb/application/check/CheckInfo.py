@@ -150,6 +150,7 @@ def adminCheckGetTask(request):
     if Comm.tryTranslateNull("checkId", getcheckId, callBackDict) == False:
         return callBackDict
     getisDone = Comm.tryTranslate(request, "isDone")
+    intGetIsDone = int(getisDone)
     if Comm.tryTranslateNull("isDone", getisDone, callBackDict) == False:
         return callBackDict
     try:
@@ -157,7 +158,7 @@ def adminCheckGetTask(request):
         checkRecordObj.isDone = getisDone;
         # 处理自己的相关的业务员
         # 1是审核通过，1是审核失败
-        if getisDone == "1" or getisDone == "2":
+        if intGetIsDone == 1 or intGetIsDone == 2:
             getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
             # 判断车辆和任务的审核状态
             taskMsg = judgeAuditStatusTaskId(getTaskObject.taskId)
