@@ -28,9 +28,12 @@ def wxGetJoinTask(request):
     logger = logging.getLogger("django")
     logger.info("userId:"+str(userObj.id))
     logger.info("openId:" + str(userObj.openId))
-
-
-    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
+    try:
+        getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return Comm.callBackFail(callBackDict,-1,"暂无数据")
     list = []
     for onegetTask in getTaskList:
         dict = {}
