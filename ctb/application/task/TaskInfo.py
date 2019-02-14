@@ -145,6 +145,7 @@ def getUserAllDoTaskList(request):
     return Comm.callBackSuccess(callBackDict, 1, list)
 
 
+
 # 领取任务
 def wxReceiveTask(request):
     callBackDict = {}
@@ -186,7 +187,7 @@ def wxReceiveTask(request):
         taskInfoObj.collectionsNum = taskInfoObj.collectionsNum + 1
         taskInfoObj.save()
         # 创建一条审核的任务
-        CheckInfo.createCheck(taskInfoObj.id, 2, userObj.id)
+        CheckInfo.createCheck(getTaskObj.id, 2, userObj.id)
         Comm.callBackSuccess(callBackDict, 1, getTaskObj.id)
     except BaseException as e:
         logger = logging.getLogger("django")
