@@ -28,14 +28,9 @@ def wxGetJoinTask(request):
     logger = logging.getLogger("django")
     logger.info("userId:"+str(userObj.id))
     logger.info("openId:" + str(userObj.openId))
-    try:
-        getTaskList = getTask.objects.all()
-    except BaseException as e:
-        logger = logging.getLogger("django")
-        logger.info(str(e))
-        return Comm.callBackFail(callBackDict,-1,"暂无数据")
+    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId,status=1)
     list = []
-    logger.info("len:" + str(len(getTaskList)))
+    logger.info("openId:" + str(userObj.openId))
     for onegetTask in getTaskList:
         dict = {}
         # 查询未完成的订单
@@ -46,8 +41,8 @@ def wxGetJoinTask(request):
         # 没有产生任何的订单
         if len(incomeStreamList)==0:
             dict['billingCycle'] = 0
-            continue
-        dict['billingCycle'] = incomeStreamList[0].createTime
+        else:
+            dict['billingCycle'] = incomeStreamList[0].createTime
         list.append(dict)
     # 组装完数据的回调
     Comm.callBackSuccess(callBackDict, 1, list)
