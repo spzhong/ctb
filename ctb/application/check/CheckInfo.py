@@ -158,7 +158,10 @@ def adminCheckGetTask(request):
         checkRecordObj.isDone = getisDone;
         # 处理自己的相关的业务员
         # 1是审核通过，1是审核失败
+        logger = logging.getLogger("django")
+        logger.info('审核任务的状态：'+str(getisDone))
         if intGetIsDone == 1 or intGetIsDone == 2:
+            logger.info('进入了1')
             getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
             # 判断车辆和任务的审核状态
             taskMsg = judgeAuditStatusTaskId(getTaskObject.taskId)
@@ -167,7 +170,8 @@ def adminCheckGetTask(request):
             catMsg = judgeAuditStatusCarId(getTaskObject.carId)
             if catMsg != None:
                 return Comm.callBackFail(callBackDict, -1, "[审核失败]"+catMsg)
-            getTaskObject.status = getisDone
+            logger.info('进入了2')
+            getTaskObject.status = intGetIsDone
             getTaskObject.save()
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict, 1, checkRecordObj.id)
