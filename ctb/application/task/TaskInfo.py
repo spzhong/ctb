@@ -95,7 +95,14 @@ def wxGetTaskInfo(request):
         return callBackDict
     try:
         onetaskInfo = taskInfo.objects.get(id=gettaskId)
-        Comm.callBackSuccess(callBackDict, 1, makeDictaskInfo(onetaskInfo))
+        # 查询当前用户是否已经领取了
+        getTaskUserList = getTask.objects.filter(userId=userObj.id,openId=userObj.openId,taskId=gettaskId)
+        dict = makeDictaskInfo(onetaskInfo)
+        if len(getTaskUserList) > 0:
+            dict["isGet"] = 1
+        else:
+            dict["isGet"] = 0
+        Comm.callBackSuccess(callBackDict, 1, dict)
     except BaseException as e:
         Comm.callBackFail(callBackDict,-1,"系统异常")
         logger = logging.getLogger("django")
