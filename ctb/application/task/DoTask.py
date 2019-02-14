@@ -65,6 +65,8 @@ def wxdoTask(request):
         # 保存领取的任务
         doTaskObj.save()
         # 创建一条审核的任务
+        logger = logging.getLogger("django")
+        logger.info("创建一条审核的记录："+str(doTaskObj.id))
         CheckInfo.createCheck(doTaskObj.id, 3, userObj.id)
         Comm.callBackSuccess(callBackDict, 1, doTaskObj.id)
     except BaseException as e:
