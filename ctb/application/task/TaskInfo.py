@@ -25,7 +25,12 @@ def wxGetJoinTask(request):
     if userObj == None:
         return callBackDict
     # 领取审核通过的数据
-    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId,status=1)
+    logger = logging.getLogger("django")
+    logger.info("userId:"+str(userObj.id))
+    logger.info("openId:" + str(userObj.openId))
+
+
+    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
     list = []
     for onegetTask in getTaskList:
         dict = {}

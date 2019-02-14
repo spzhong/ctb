@@ -91,7 +91,7 @@ def submitCheck(request):
 def createCheck(getbusinessId,gettype,userId):
     try:
         getcreateTime = int(time.time() * 1000)
-        checkRecordObj = checkRecord.objects.create(userId=userId,createTime=getcreateTime,businessId=getbusinessId,type=gettype)
+        checkRecordObj = checkRecord.objects.create(status = 0,userId=userId,createTime=getcreateTime,businessId=getbusinessId,type=gettype)
         checkRecordObj.save()
         return checkRecordObj
     except BaseException as e:
