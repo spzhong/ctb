@@ -29,7 +29,7 @@ def wxGetJoinTask(request):
     logger.info("userId:"+str(userObj.id))
     logger.info("openId:" + str(userObj.openId))
     try:
-        getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
+        getTaskList = getTask.objects.filter(userId=userObj.id)
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
