@@ -91,11 +91,14 @@ def submitCheck(request):
 def createCheck(getbusinessId,gettype,userId):
     try:
         getcreateTime = int(time.time() * 1000)
-        checkRecordObj = checkRecord.objects.create(status = 0,userId=userId,createTime=getcreateTime,businessId=getbusinessId,type=gettype)
+        logger = logging.getLogger("django")
+        logger.info("创建一条审核的记录 getbusinessId：" + str(getbusinessId))
+        checkRecordObj = checkRecord.objects.create(userId=userId,createTime=getcreateTime,businessId=getbusinessId,type=gettype)
         checkRecordObj.save()
         return checkRecordObj
     except BaseException as e:
         logger = logging.getLogger("django")
+        logger.info("异常了")
         logger.info(str(e))
         return None
 
