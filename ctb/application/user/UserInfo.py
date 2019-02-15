@@ -57,8 +57,12 @@ def adminGetAllUsers(request):
     getpageSize = Comm.tryTranslate(request, "pageSize")
     if getpage == None:
         getpage = 0
+    else:
+        getpage = int(getpage)
     if getpageSize == None:
-        getpage = 20
+        getpageSize = 20
+    else:
+        getpageSize = int(getpageSize)
     userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:

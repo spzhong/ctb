@@ -29,8 +29,12 @@ def getStayAdminCheck(request):
     getpageSize = Comm.tryTranslate(request, "pageSize")
     if getpage == None:
         getpage = 0
+    else:
+        getpage = int(getpage)
     if getpageSize == None:
-        getpage = 20
+        getpageSize = 20
+    else:
+        getpageSize = int(getpageSize)
     try:
         getcheckRecordList = checkRecord.objects.filter(isDone=0).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         list = []
@@ -55,8 +59,12 @@ def getALlAdminCheck(request):
     getpageSize = Comm.tryTranslate(request, "pageSize")
     if getpage == None:
         getpage = 0
+    else:
+        getpage = int(getpage)
     if getpageSize == None:
-        getpage = 20
+        getpageSize = 20
+    else:
+        getpageSize = int(getpageSize)
     try:
         getcheckRecordList = checkRecord.objects.all()[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         list = []
