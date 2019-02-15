@@ -40,6 +40,7 @@ def getStayAdminCheck(request):
         list = []
         for oneRecord in getcheckRecordList:
             list.append({"id":oneRecord.id,"businessId":oneRecord.businessId,"type":oneRecord.type,"isDone":oneRecord.isDone,"createTime":oneRecord.createTime})
+        callBackDict['totalNum'] = checkRecord.objects.filter(isDone=0).count()
         return Comm.callBackSuccess(callBackDict,1,list)
     except BaseException as e:
         logger = logging.getLogger("django")
@@ -71,6 +72,7 @@ def getALlAdminCheck(request):
         for oneRecord in getcheckRecordList:
             list.append({"id": oneRecord.id, "businessId": oneRecord.businessId, "type": oneRecord.type,
                          "isDone": oneRecord.isDone, "createTime": oneRecord.createTime})
+        callBackDict['totalNum'] = checkRecord.objects.all().count()
         return Comm.callBackSuccess(callBackDict, 1, list)
     except BaseException as e:
         logger = logging.getLogger("django")
