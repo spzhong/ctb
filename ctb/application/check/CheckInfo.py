@@ -25,8 +25,14 @@ def getStayAdminCheck(request):
     userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
+    getpage = Comm.tryTranslate(request, "page")
+    getpageSize = Comm.tryTranslate(request, "pageSize")
+    if getpage == None:
+        getpage = 0
+    if getpageSize == None:
+        getpage = 20
     try:
-        getcheckRecordList = checkRecord.objects.filter(isDone=0)
+        getcheckRecordList = checkRecord.objects.filter(isDone=0).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         list = []
         for oneRecord in getcheckRecordList:
             list.append({"id":oneRecord.id,"businessId":oneRecord.businessId,"type":oneRecord.type,"isDone":oneRecord.isDone,"createTime":oneRecord.createTime})
@@ -45,8 +51,14 @@ def getALlAdminCheck(request):
     userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
+    getpage = Comm.tryTranslate(request, "page")
+    getpageSize = Comm.tryTranslate(request, "pageSize")
+    if getpage == None:
+        getpage = 0
+    if getpageSize == None:
+        getpage = 20
     try:
-        getcheckRecordList = checkRecord.objects.all()
+        getcheckRecordList = checkRecord.objects.all()[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         list = []
         for oneRecord in getcheckRecordList:
             list.append({"id": oneRecord.id, "businessId": oneRecord.businessId, "type": oneRecord.type,

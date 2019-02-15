@@ -24,6 +24,8 @@ def index(request,route):
         callBackDict = CheckGetInfo.getDoTaskInfo(request)
     elif route == 'adminGetAllUsers':
         callBackDict = UserInfo.adminGetAllUsers(request)
+    elif route == 'perfectUserInfo':
+        callBackDict = UserInfo.perfectUserInfo(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))

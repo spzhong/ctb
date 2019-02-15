@@ -15,6 +15,11 @@ class user(models.Model):
     # 收入和支出的总金额
     incomeMoney = models.IntegerField(default=0)
     outPutMoney = models.IntegerField(default=0)
+    # 真是名字
+    trueName = models.CharField(max_length=255,null=True)
+    # 地址
+    address = models.CharField(max_length=520,null=True)
+
 
 
 # 车辆信息（审核）

@@ -22,7 +22,13 @@ def wxegisterSign(request):
         # 查询判断用户是否已经存在的
         userList = user.objects.filter(openId=getopenId)
         if len(userList) > 0:
-            Comm.callBackSuccess(callBackDict, 1, userList[0].id)
+            dict = {}
+            dict['userId'] =  userList[0].id
+            dict['name'] = userList[0].name
+            dict['address'] = userList[0].address
+            dict['trueName'] = userList[0].trueName
+            dict['phone'] = userList[0].phone
+            Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
         createTime = int(time.time() * 1000)
         if getopenId == '10000':
@@ -47,8 +53,43 @@ def adminGetAllUsers(request):
     userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
-    userList = user.objects.all()
+    getpage = Comm.tryTranslate(request, "page")
+    getpageSize = Comm.tryTranslate(request, "pageSize")
+    if getpage == None:
+        getpage = 0
+    if getpageSize == None:
+        getpage = 20
+    userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:
-        list.append({"id":oneuser.id,"openId":oneuser.openId,"name":oneuser.name,"phone":oneuser.phone,"role":oneuser.role})
+        list.append({"id":oneuser.id,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     return Comm.callBackSuccess(callBackDict, 1, list)
+
+
+
+
+
+# 完善用户信息
+def perfectUserInfo(request):
+    # 取得获取的值
+    callBackDict = {}
+    getphone = Comm.tryTranslate(request, "phone")
+    getaddress = Comm.tryTranslate(request, "address")
+    gettrueName = Comm.tryTranslate(request, "trueName")
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    try:
+        if getphone:
+            userObj.phone = getphone
+        if getaddress:
+            userObj.address = getaddress
+        if gettrueName:
+            userObj.trueName = gettrueName
+        userObj.save()
+        return Comm.callBackSuccess(callBackDict, 1, userObj.id)
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return Comm.callBackFail(callBackDict,-1,"系统异常")
