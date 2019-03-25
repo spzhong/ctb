@@ -36,7 +36,9 @@ def wxegisterSign(request):
         else:
             userObj = user.objects.create(openId=getopenId, role=2, createTime=createTime)
         userObj.save()
-        Comm.callBackSuccess(callBackDict, 1, userObj.id)
+        dict = {}
+        dict['userId'] = userObj.id
+        Comm.callBackSuccess(callBackDict, 1, dict)
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
@@ -66,7 +68,7 @@ def adminGetAllUsers(request):
     userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:
-        list.append({"id":oneuser.id,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
+        list.append({"id":oneuser.id,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     callBackDict['totalNum'] = user.objects.all().count()
     return Comm.callBackSuccess(callBackDict, 1, list)
 
