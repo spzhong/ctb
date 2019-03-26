@@ -68,7 +68,7 @@ def adminGetAllUsers(request):
     userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:
-        carNum = carInfo.objects.filter().count()
+        carNum = carInfo.objects.filter(userId=oneuser.id).count()
         list.append({"carNum":carNum,"id":oneuser.id,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     callBackDict['totalNum'] = user.objects.all().count()
     return Comm.callBackSuccess(callBackDict, 1, list)
