@@ -8,7 +8,7 @@ sys.path.append('...')
 from ctb.models import user
 from .. import Comm
 from .. import Jurisdiction
-
+from ctb.models import carInfo
 
 
 # 微信登录注册认证
@@ -68,7 +68,8 @@ def adminGetAllUsers(request):
     userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:
-        list.append({"id":oneuser.id,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
+        carNum = carInfo.objects.filter().count()
+        list.append({"carNum":carNum,"id":oneuser.id,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     callBackDict['totalNum'] = user.objects.all().count()
     return Comm.callBackSuccess(callBackDict, 1, list)
 

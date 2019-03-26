@@ -19,7 +19,7 @@ def wxgetCarList(request):
     if userObj == None:
         return callBackDict
     try:
-        carInfoList = carInfo.objects.filter(userId = userObj.id)
+        carInfoList = carInfo.objects.filter(userId = userObj.id).order_by("-createTime")
         list = []
         for onecarInfo in carInfoList:
             imgsJosn = json.loads(onecarInfo.adImgs)
@@ -84,19 +84,19 @@ def wxEditCar(request):
         return callBackDict
     if Comm.tryTranslateNull("carNum", getcarNum, callBackDict) == False:
         return callBackDict
-    if Comm.tryTranslateNull("adImgs", getadImgs, callBackDict) == False:
-        return callBackDict
-    try:
-        json.loads(getadImgs)
-    except BaseException as e:
-        getadImgs = '[]'
+    # if Comm.tryTranslateNull("adImgs", getadImgs, callBackDict) == False:
+    #     return callBackDict
+    # try:
+    #     json.loads(getadImgs)
+    # except BaseException as e:
+    #     getadImgs = '[]'
     # 其他额外信息
     getcarModel = Comm.tryTranslate(request, "carModel")
     getremark = Comm.tryTranslate(request, "remark")
     try:
         carInfoObj = carInfo.objects.get(id = getcarId)
         carInfoObj.carNum = getcarNum
-        carInfoObj.adImgs = getadImgs
+        # carInfoObj.adImgs = getadImgs
         if getcarModel:
             carInfoObj.carModel = getcarModel
         if getremark:
