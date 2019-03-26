@@ -19,7 +19,7 @@ def wxgetCarList(request):
     if userObj == None:
         return callBackDict
     try:
-        carInfoList = carInfo.objects.filter(userId = userObj.id).order_by("-createTime")
+        carInfoList = carInfo.objects.filter(userId = userObj.id).order_by("-id")
         list = []
         for onecarInfo in carInfoList:
             imgsJosn = json.loads(onecarInfo.adImgs)
