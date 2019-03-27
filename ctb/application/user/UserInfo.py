@@ -9,7 +9,8 @@ from ctb.models import user
 from .. import Comm
 from .. import Jurisdiction
 from ctb.models import carInfo
-
+import re
+# import hashlib
 
 # 微信登录注册认证
 def wxegisterSign(request):
@@ -100,3 +101,40 @@ def perfectUserInfo(request):
         logger = logging.getLogger("django")
         logger.info(str(e))
         return Comm.callBackFail(callBackDict,-1,"系统异常")
+
+
+
+# web端登录
+def webSign(request):
+    # 取得获取的值
+    callBackDict = {}
+    getphone = Comm.tryTranslate(request, "phone")
+    getpassword = Comm.tryTranslate(request, "password")
+    if Comm.tryTranslateNull('phone', getphone, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull('password', getpassword, callBackDict) == False:
+        return callBackDict
+    # hash = hashlib.md5()
+    # hash.update(str(getpassword).encode("utf-8"))
+    # md = hash.hexdigest()
+    # hash2 = hashlib.md5()
+    # hash2.update(str(md).encode("utf-8"))
+    # newgetpassword = str(hash2.hexdigest())
+    try:
+        # 查询判断用户是否已经存在的
+        userList = user.objects.filter(phone=getphone,password=getpassword,role=0)
+        if len(userList) > 0:
+            dict = {}
+            dict['userId'] =  userList[0].id
+            dict['name'] = userList[0].name
+            dict['address'] = userList[0].address
+            dict['trueName'] = userList[0].trueName
+            dict['phone'] = userList[0].phone
+            Comm.callBackSuccess(callBackDict, 1,dict)
+            return callBackDict
+            Comm.callBackFail(callBackDict, -1, "登录失败")
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackFail(callBackDict,-1,"系统异常")
+    return callBackDict

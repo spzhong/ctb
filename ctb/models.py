@@ -3,6 +3,8 @@
 from django.db import models
 
 
+
+
 # 用户
 class user(models.Model):
     openId = models.CharField(max_length=64,unique=True)
@@ -19,7 +21,8 @@ class user(models.Model):
     trueName = models.CharField(max_length=255,null=True)
     # 地址
     address = models.CharField(max_length=520,null=True)
-
+    # 登录的token
+    loginToken = models.CharField(max_length=64,null=True)
 
 
 # 车辆信息（审核）

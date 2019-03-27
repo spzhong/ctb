@@ -8,6 +8,7 @@ sys.path.append('..')
 from ctb.models import user
 
 
+
 # 判断用户角色信息
 def jurisdictGETOpenId(request,callBackDict):
     # 取得获取的值
@@ -33,17 +34,18 @@ def jurisdictGETOpenId(request,callBackDict):
         return None
 
 
+
 # 判断用户角色信息
 def jurisAdminGETOpenId(request,callBackDict):
     # 取得获取的值
-    getopenId = Comm.tryTranslate(request,"openId")
+    gettoken = Comm.tryTranslate(request,"token")
     getuserId = Comm.tryTranslate(request,"userId")
-    if Comm.tryTranslateNull('openId',getopenId,callBackDict) == False:
+    if Comm.tryTranslateNull('token',gettoken,callBackDict) == False:
         return None
     if Comm.tryTranslateNull('userId',getuserId,callBackDict) == False:
         return None
     try:
-        userList = user.objects.filter(openId = getopenId, id=getuserId)
+        userList = user.objects.filter(loginToken = gettoken, id=getuserId)
         if len(userList) == 0:
             callBackDict['code'] = -2
             callBackDict['msg'] = "用户不存在"

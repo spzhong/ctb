@@ -26,6 +26,8 @@ def index(request,route):
         callBackDict = UserInfo.adminGetAllUsers(request)
     elif route == 'perfectUserInfo':
         callBackDict = UserInfo.perfectUserInfo(request)
+    elif route == 'webSign':
+        callBackDict = UserInfo.webSign(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))
