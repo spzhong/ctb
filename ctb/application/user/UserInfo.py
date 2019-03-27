@@ -40,6 +40,7 @@ def wxegisterSign(request):
         userObj.save()
         dict = {}
         dict['userId'] = userObj.id
+        dict['isEnabled'] = 0
         Comm.callBackSuccess(callBackDict, 1, dict)
     except BaseException as e:
         logger = logging.getLogger("django")

@@ -25,6 +25,9 @@ class user(models.Model):
     loginToken = models.CharField(max_length=64,null=True)
     # 是否是启用，默认是0，1是关闭
     isEnabled = models.IntegerField(default=0)
+    # 登录的时间
+    loginTime = models.CharField(max_length=100,null=True)
+
 
 
 # 车辆信息（审核）
