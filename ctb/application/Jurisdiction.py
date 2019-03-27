@@ -45,13 +45,19 @@ def jurisAdminGETOpenId(request,callBackDict):
     if Comm.tryTranslateNull('userId',getuserId,callBackDict) == False:
         return None
     try:
-        userList = user.objects.filter(loginToken = gettoken, id=getuserId)
+        logger = logging.getLogger("django")
+        logger.info(gettoken)
+        userList = user.objects.filter(phone=13751042830)
+        # userList = user.objects.filter(loginToken = gettoken, id=getuserId)
         if len(userList) == 0:
             callBackDict['code'] = -2
             callBackDict['msg'] = "用户不存在"
             return None
         # 查询出来了用户了
         userObj = userList[0]
+        logger.info(userObj.id)
+        logger.info(userObj.loginToken)
+        logger.info(userObj.openId)
         if userObj.role == 0:
             return userObj
         callBackDict['code'] = -3
