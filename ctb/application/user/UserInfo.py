@@ -162,6 +162,7 @@ def adminisEnabledUser(request):
     try:
         userObj = user.objects.get(id=getcurUserId)
         userObj.isEnabled = getisEnabled
+        userObj.save()
         Comm.callBackSuccess(callBackDict, 1, None)
         return callBackDict
     except BaseException as e:
