@@ -126,7 +126,7 @@ def webSign(request):
         # 查询判断用户是否已经存在的
         userList = user.objects.filter(phone=getphone,password=getpassword,role=0)
         if len(userList) > 0:
-            userList[0].loginToken = str(uuid.uuid1())
+            userList[0].loginToken = str(uuid.uuid1()).replace("-","")
             userList[0].save()
             dict = {}
             dict['userId'] =  userList[0].id
