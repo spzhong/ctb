@@ -72,7 +72,7 @@ def adminGetAllUsers(request):
     list = []
     for oneuser in userList:
         carNum = carInfo.objects.filter(userId=oneuser.id).count()
-        list.append({"carNum":carNum,"id":oneuser.id,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
+        list.append({"carNum":carNum,"id":oneuser.id,"isEnabled":oneuser.isEnabled,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     callBackDict['totalNum'] = user.objects.all().count()
     return Comm.callBackSuccess(callBackDict, 1, list)
 
@@ -138,6 +138,32 @@ def webSign(request):
             Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
         Comm.callBackFail(callBackDict, -1, "登录失败")
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackFail(callBackDict,-1,"系统异常")
+    return callBackDict
+
+
+
+def adminisEnabledUser(request):
+    # 取得获取的值
+    callBackDict = {}
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    getisEnabled = Comm.tryTranslate(request, "isEnabled")
+    getcurUserId = Comm.tryTranslate(request, "curUserId")
+    if Comm.tryTranslateNull('isEnabled', getisEnabled, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull('curUserId', getcurUserId, callBackDict) == False:
+        return callBackDict
+    try:
+        userObj = user.objects.get(id=getcurUserId)
+        userObj.isEnabled = getisEnabled
+        Comm.callBackSuccess(callBackDict, 1, dict)
+        return callBackDict
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
