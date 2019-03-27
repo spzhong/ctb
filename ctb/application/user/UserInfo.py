@@ -162,7 +162,7 @@ def adminisEnabledUser(request):
     try:
         userObj = user.objects.get(id=getcurUserId)
         userObj.isEnabled = getisEnabled
-        Comm.callBackSuccess(callBackDict, 1, dict)
+        Comm.callBackSuccess(callBackDict, 1, None)
         return callBackDict
     except BaseException as e:
         logger = logging.getLogger("django")
