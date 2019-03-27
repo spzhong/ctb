@@ -150,7 +150,7 @@ def adminisEnabledUser(request):
     # 取得获取的值
     callBackDict = {}
     # 验证用户的openID
-    userObj = Jurisdiction.jurisdictGETOpenId(request, callBackDict)
+    userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
     getisEnabled = Comm.tryTranslate(request, "isEnabled")
