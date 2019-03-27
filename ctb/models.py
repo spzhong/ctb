@@ -23,6 +23,8 @@ class user(models.Model):
     address = models.CharField(max_length=520,null=True)
     # 登录的token
     loginToken = models.CharField(max_length=64,null=True)
+    # 是否是启用，默认是0，1是关闭
+    isEnabled = models.IntegerField(default=0)
 
 
 # 车辆信息（审核）

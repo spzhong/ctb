@@ -10,7 +10,7 @@ from .. import Comm
 from .. import Jurisdiction
 from ctb.models import carInfo
 import re
-# import hashlib
+import uuid
 
 # 微信登录注册认证
 def wxegisterSign(request):
@@ -29,6 +29,7 @@ def wxegisterSign(request):
             dict['address'] = userList[0].address
             dict['trueName'] = userList[0].trueName
             dict['phone'] = userList[0].phone
+            dict['isEnabled'] = userList[0].isEnabled
             Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
         createTime = int(time.time() * 1000)
@@ -124,15 +125,18 @@ def webSign(request):
         # 查询判断用户是否已经存在的
         userList = user.objects.filter(phone=getphone,password=getpassword,role=0)
         if len(userList) > 0:
+            userList[0].loginToken = str(uuid.uuid1())
+            userList[0].save()
             dict = {}
             dict['userId'] =  userList[0].id
             dict['name'] = userList[0].name
             dict['address'] = userList[0].address
             dict['trueName'] = userList[0].trueName
             dict['phone'] = userList[0].phone
+            dict['token'] = userList[0].loginToken
             Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
-            Comm.callBackFail(callBackDict, -1, "登录失败")
+        Comm.callBackFail(callBackDict, -1, "登录失败")
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
