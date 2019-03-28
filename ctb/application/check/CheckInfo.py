@@ -378,6 +378,7 @@ def judgeAuditStatusgetTaskObj(getTaskId):
     return "领取的任务ID不存在"
 
 
+
 # 判断车辆信息是否审核通过了
 def judgeAuditStatusCarId(carId):
     try:
@@ -393,3 +394,105 @@ def judgeAuditStatusCarId(carId):
         logger = logging.getLogger("django")
         logger.info(str(e))
         return "车辆不存在"
+
+
+# 将任务的对象信息转换为字典
+def makeDictaskInfo(taskInfo):
+    try:
+        imgsJosn = json.loads(taskInfo.adImgs)
+    except BaseException as e:
+        imgsJosn = []
+    return {"id": taskInfo.id, "title": taskInfo.title, "createTime": taskInfo.createTime,
+            "activityRange": taskInfo.activityRange, "billingCycle": taskInfo.billingCycle,
+            "collectionsNum": taskInfo.collectionsNum, "limitNum": taskInfo.limitNum,
+            "priceMonth": taskInfo.priceMonth,
+            "stickerArea": taskInfo.stickerArea, "deadline": taskInfo.deadline, "info": taskInfo.info,
+            "remark": taskInfo.remark, "status": taskInfo.status, "adImgs": imgsJosn}
+
+
+
+# 查看任务详情
+def adminBusinessInfo(request):
+    callBackDict = {}
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    getbusinessId = Comm.tryTranslate(request, "businessId")
+    if Comm.tryTranslateNull("businessId", getbusinessId, callBackDict) == False:
+        return callBackDict
+    gettype = Comm.tryTranslate(request, "type")
+    if Comm.tryTranslateNull("type", gettype, callBackDict) == False:
+        return callBackDict
+    #0是审核创建的任务，1是审核车辆，2是审核领取任务，3是审核提交的任务，4是审核提现的任务
+    if gettype == "0":#0是审核创建的任务
+        try:
+            taskInfoObj = taskInfo.objects.get(id=getbusinessId)
+            return Comm.callBackSuccess(callBackDict, 1, makeDictaskInfo(taskInfoObj))
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
+            return Comm.callBackFail(callBackDict, -1, "系统异常")
+    elif gettype == "1":#1是审核车辆
+        try:
+            onecarInfo = carInfo.objects.get(id=getbusinessId)
+            imgsJosn = json.loads(onecarInfo.adImgs)
+            return Comm.callBackSuccess(callBackDict, 1, {"status": onecarInfo.status, "id": onecarInfo.id, "carNum": onecarInfo.carNum,
+                         "carModel": onecarInfo.carModel, "remark": onecarInfo.remark, "adImgs": imgsJosn})
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
+            return Comm.callBackFail(callBackDict, -1, "系统异常")
+    elif gettype == "2":#2是审核领取任务
+        try:
+            # 领取的任务
+            getTaskObj = getTask.objects.get(id=getbusinessId)
+            dict = {}
+            dict['id'] = getTaskObj.id
+            dict['userId'] = getTaskObj.userId
+            dict['openId'] = getTaskObj.openId
+            dict['createTime'] = getTaskObj.createTime
+            dict['status'] = getTaskObj.status
+            # 获取任务详情的信息
+            dict['taskInfo'] = makeDictaskInfo(taskInfo.objects.get(id=getTaskObj.taskId))
+            return Comm.callBackSuccess(callBackDict, 1,dict)
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
+            return Comm.callBackFail(callBackDict, -1, "系统异常")
+    elif gettype == "3":#3是审核提交的任务
+        try:
+            doTaskObj = doTask.objects.get(id=getbusinessId)
+            dict = {}
+            dict['id'] = doTaskObj.id
+            dict['userId'] = doTaskObj.userId
+            dict['openId'] = doTaskObj.openId
+            dict['createTime'] = doTaskObj.createTime
+            dict['status'] = doTaskObj.status
+            dict['getTaskId'] = doTaskObj.getTaskId
+            try:
+                imgsJosn = json.loads(doTaskObj.adImgs)
+            except BaseException as e:
+                imgsJosn = []
+            dict['adImgs'] = imgsJosn
+            return Comm.callBackSuccess(callBackDict, 1, dict)
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
+            return Comm.callBackFail(callBackDict, -1, "系统异常")
+    elif gettype == "4":#4是审核提现的任务
+        try:
+            outStreamObj = outStream.objects.get(id=getbusinessId)
+            dict = {}
+            dict['id'] = outStreamObj.id
+            dict['userId'] = outStreamObj.userId
+            dict['openId'] = outStreamObj.openId
+            dict['createTime'] = outStreamObj.createTime
+            dict['money'] = outStreamObj.status
+            return Comm.callBackSuccess(callBackDict, 1, dict)
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
+            return Comm.callBackFail(callBackDict, -1, "系统异常")
+    return callBackDict
+
