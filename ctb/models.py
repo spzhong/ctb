@@ -94,6 +94,8 @@ class getTask(models.Model):
     createTime = models.BigIntegerField(default=0)
     # 当前任务的状态，0是提交审核，1是审核通过（正式开始计算领取任务的时间，进行中），2是审核失败，-1是已删除
     status = models.IntegerField(default=0)
+    # 判断是否已经发物料了，默认0是没有发发放，1是已经发放
+    isSendMateriel = models.IntegerField(default=0)
 
 
 

@@ -23,6 +23,9 @@ def index(request,route):
          callBackDict = CheckInfo.getALlAdminCheck(request)
     elif route == 'adminBusinessInfo':
         callBackDict = CheckInfo.adminBusinessInfo(request)
+    elif route == 'sendMateriel':
+        callBackDict = CheckInfo.sendMateriel(request)
     else:
          return HttpResponse("no found !!!")
     return HttpResponse(json.dumps(callBackDict))
+

@@ -496,3 +496,25 @@ def adminBusinessInfo(request):
             return Comm.callBackFail(callBackDict, -1, "系统异常")
     return callBackDict
 
+
+
+# 审核发放物料
+def sendMateriel(request):
+    callBackDict = {}
+    # 验证用户的openID
+    userObj = Jurisdiction.jurisAdminGETOpenId(request, callBackDict)
+    if userObj == None:
+        return callBackDict
+    getTaskId = Comm.tryTranslate(request, "getTaskId")
+    if Comm.tryTranslateNull("领取的任务ID为空", getTaskId, callBackDict) == False:
+        return callBackDict
+    try:
+        getTaskObj = getTask.objects.get(id=getTaskId)
+        getTaskObj.isSendMateriel = 1
+        getTaskObj.save()
+        return Comm.callBackSuccess(callBackDict, 1, getTaskId)
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        return Comm.callBackFail(callBackDict, -1, "系统异常")
+    return callBackDict
