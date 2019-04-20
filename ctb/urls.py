@@ -8,8 +8,6 @@ from .application import check
 from .application import stream
 
 
-
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'ctb.views.home', name='home'),

@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
 import CheckInfo
-
 from django.http import HttpResponse
 
+from django.db import connections
 
+def close_old_connections():
+    for conn in connections.all():
+        conn.close_if_unusable_or_obsolete()
 
 def index(request,route):
+    close_old_connections()
     if route == 'getStayAdminCheck':
         callBackDict = CheckInfo.getStayAdminCheck(request)
     elif route == 'submitCheck':

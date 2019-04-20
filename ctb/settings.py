@@ -68,8 +68,13 @@ DATABASES = {
         'PASSWORD':'ctb@123456',
         'HOST':'10.66.145.129',
         'PORT':'3306',
+        'SIZE': '10',  # Default '0' means unlimit connection pool size
+        'OPTIONS': {
+                'init_command': 'SET default_storage_engine=INNODB',
+            },
         }
 }
+
 
 
 
