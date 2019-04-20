@@ -32,5 +32,7 @@ def index(request,route):
         callBackDict = UserInfo.adminisEnabledUser(request)
     else:
          return HttpResponse("no found !!!")
+    if callBackDict == None :
+        callBackDict = {"code":-1,'msg':'系统异常'}
     return HttpResponse(json.dumps(callBackDict))
 
