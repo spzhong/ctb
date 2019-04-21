@@ -28,7 +28,7 @@ def wxGetJoinTask(request):
     logger = logging.getLogger("django")
     logger.info("userId:"+str(userObj.id))
     logger.info("openId:" + str(userObj.openId))
-    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId,status=1)
+    getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
     list = []
     logger.info("openId:" + str(userObj.openId))
     for onegetTask in getTaskList:
@@ -38,6 +38,7 @@ def wxGetJoinTask(request):
         dict["carId"] = onegetTask.carId
         dict["taskId"] = onegetTask.taskId
         dict["isSendMateriel"] = onegetTask.isSendMateriel
+        dict["status"] = onegetTask.status
         incomeStreamList = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId,getTaskId=onegetTask.id, status=0).order_by("-createTime")
         # 没有产生任何的订单
         if len(incomeStreamList)==0:

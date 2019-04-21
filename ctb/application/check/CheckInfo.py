@@ -67,7 +67,7 @@ def getALlAdminCheck(request):
     else:
         getpageSize = int(getpageSize)
     try:
-        getcheckRecordList = checkRecord.objects.all()[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+        getcheckRecordList = checkRecord.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         list = []
         for oneRecord in getcheckRecordList:
             list.append({"id": oneRecord.id, "businessId": oneRecord.businessId, "type": oneRecord.type,
@@ -270,7 +270,7 @@ def createIncomeStream(checkRecordObj,doTaskObject):
             incomeStreamObj = incomeStream.objects.create(userId=doTaskObject.userId, openId=doTaskObject.openId,
                                                           getTaskId=doTaskObject.getTaskId,
                                                           checkRecordId=checkRecordObj.id, status=0)
-            incomeStreamObj.createTime = doTaskObject.createTime
+            incomeStreamObj.createTime = int(time.time() * 1000)
             incomeStreamObj.money = taskInfoObj.priceMonth
             incomeStreamObj.save()
         except BaseException as e:
