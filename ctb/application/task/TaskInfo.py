@@ -76,7 +76,7 @@ def wxGetALLTask(request):
     if userObj == None:
         return callBackDict
     try:
-        taskInfoList = taskInfo.objects.filter(status__range=[2, 3])
+        taskInfoList = taskInfo.objects.filter(status__range=[2, 4])
         list = []
         for onetaskInfo in taskInfoList:
             list.append(makeDictaskInfo(onetaskInfo))
