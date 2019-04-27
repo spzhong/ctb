@@ -146,12 +146,13 @@ def adminCheckCarInfo(request):
         # 1是审核通过，1是审核失败
         logger = logging.getLogger("django")
         logger.info(str(getisDone))
-        if getisDone == "1" or getisDone == "2":
+        if getisDone == "1" :
             carInfoObject = carInfo.objects.get(id=checkRecordObj.businessId)
             carInfoObject.status = getisDone
             carInfoObject.save()
-            logger.info("进入了")
-        logger.info("------------")
+        else:
+            # 删除该条记录
+            carInfo.objects.get(id=checkRecordObj.businessId).delete()
         # 保存审核记录的状态
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict,1,checkRecordObj.id)
@@ -196,6 +197,11 @@ def adminCheckGetTask(request):
                 return Comm.callBackFail(callBackDict, -1, "[审核失败]"+catMsg)
             getTaskObject.status = intGetIsDone
             getTaskObject.save()
+        # 释放审核的资源
+        if intGetIsDone != 1:
+            taskInfoObj = taskInfo.objects.get(id=checkRecordObj.businessId)
+            taskInfoObj.collectionsNum = taskInfoObj.collectionsNum - 1
+            taskInfoObj.save()
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict, 1, checkRecordObj.id)
     except BaseException as e:
@@ -230,12 +236,13 @@ def adminCheckDoTask(request):
             # 审核通过的逻辑，创建一条的流水
             if getisDone == "1":
                 # 判断是否审核失败了
-                if createIncomeStream(checkRecordObj, doTaskObject) == False:
+                errorMsg = createIncomeStream(checkRecordObj, doTaskObject)
+                if len(errorMsg) > 0:
                     doTaskObject.status = 2
                     checkRecordObj.isDone = 2
                     checkRecordObj.save()
                     doTaskObject.save()
-                    return Comm.callBackFail(callBackDict, -1, "审核失败")
+                    return Comm.callBackFail(callBackDict, -1, "[审核失败]:"+errorMsg)
             # 更新当前任务的状态
             doTaskObject.status = getisDone
             doTaskObject.save()
@@ -259,8 +266,8 @@ def createIncomeStream(checkRecordObj,doTaskObject):
         taskInfoObj = taskInfo.objects.get(id=getTaskObj.taskId)
     except BaseException as e:
         logger = logging.getLogger("django")
-        logger.info("createIncomeStream 查询任务的详情失败" + str(e))
-        return False
+        logger.info("查询任务的详情失败" + str(e))
+        return "任务不存在"
     # 首先查询当前用户的流水情况（是否有未完成的流水）
     incomeStreamList = incomeStream.objects.filter(userId=doTaskObject.userId, openId=doTaskObject.openId,
                                                    getTaskId=doTaskObject.getTaskId,status=0).order_by("-createTime")
@@ -275,18 +282,31 @@ def createIncomeStream(checkRecordObj,doTaskObject):
             incomeStreamObj.save()
         except BaseException as e:
             logger = logging.getLogger("django")
-            logger.info("createIncomeStream 创建一条新的流水失败" + str(e))
-            return False
+            logger.info("创建一条新的流水失败" + str(e))
+            return "首次创建流水失败"
     else:
         # 获取当前的信息的流水
         unfinishedincomeStream = incomeStreamList[0]
         # 如果超过了28天就算有效的数据
-        if doTaskObject.createTime - unfinishedincomeStream.createTime >= 1000*60*3: #28*24*3600*1000:
+        if doTaskObject.createTime - unfinishedincomeStream.createTime >= (3600 * 1000):
+        #if doTaskObject.createTime - unfinishedincomeStream.createTime >= (taskInfoObj.billingCycle * 30 * 24*3600*1000):
             try:
                 unfinishedincomeStream.endTime = doTaskObject.createTime
                 unfinishedincomeStream.status = 1  # 审核通过的流水
                 unfinishedincomeStream.save()
                 # 同时判断一下是否要继续下一个的周期
+                # 判断当前任务的状态
+                if taskInfoObj.status == 4 or taskInfoObj.status == -1:
+                    logger = logging.getLogger("django")
+                    logger.info("当前任务已经删除，或是已截止")
+                    return "当前任务已经删除，或是已截止"
+                # 判断是否，有下一个周期
+                #if (taskInfoObj.deadline-doTaskObject.createTime) < (taskInfoObj.billingCycle * 30 * 24 * 3600 * 1000):
+                if (taskInfoObj.deadline - doTaskObject.createTime) < (3600*1000):
+                    logger = logging.getLogger("django")
+                    logger.info("小于一个周期的时候，就不创建未来的订单")
+                    return "小于一个周期的时候，不创建未来的订单"
+                # 判断是否，有下一个周期
                 # --------暂时不处理---------
                 # 同时判断一下是否要继续下一个的周期
                 newIncomeStreamObj = incomeStream.objects.create(userId=doTaskObject.userId, openId=doTaskObject.openId,
@@ -297,13 +317,13 @@ def createIncomeStream(checkRecordObj,doTaskObject):
                 newIncomeStreamObj.save()
             except BaseException as e:
                 logger = logging.getLogger("django")
-                logger.info("createIncomeStream  更新流水失败" + str(e))
-                return False
+                logger.info("更新流水失败" + str(e))
+                return "更新流水失败"
         else:
             logger = logging.getLogger("django")
-            logger.info("createIncomeStream 更新流水失败，审核是失败的，没有到一个更新的周期")
-            return False
-    return True
+            logger.info("更新流水失败，审核是失败的，没有到一个更新的周期")
+            return "新流水失败，审核是失败的，没有到一个更新的周期"
+    return ""
 
 
 
@@ -453,6 +473,24 @@ def adminBusinessInfo(request):
             dict['openId'] = getTaskObj.openId
             dict['createTime'] = getTaskObj.createTime
             dict['status'] = getTaskObj.status
+            dict['carId'] = getTaskObj.carId
+            try:
+                oneuser = user.objects.get(id=getTaskObj.userId)
+                dict['userInfo'] = {"id": oneuser.id, "isEnabled": oneuser.isEnabled,
+                    "createTime": oneuser.createTime, "openId": oneuser.openId, "trueName": oneuser.trueName,
+                    "name": oneuser.name, "address": oneuser.address, "phone": oneuser.phone,
+                    "role": oneuser.role}
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
+            try:
+                onecarInfo = carInfo.objects.get(id=getTaskObj.carId)
+                imgsJosn = json.loads(onecarInfo.adImgs)
+                dict['carInfo'] = {"status": onecarInfo.status, "id": onecarInfo.id, "carNum": onecarInfo.carNum,
+                             "carModel": onecarInfo.carModel, "remark": onecarInfo.remark, "adImgs": imgsJosn}
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
             # 获取任务详情的信息
             dict['taskInfo'] = makeDictaskInfo(taskInfo.objects.get(id=getTaskObj.taskId))
             return Comm.callBackSuccess(callBackDict, 1,dict)
@@ -470,6 +508,22 @@ def adminBusinessInfo(request):
             dict['createTime'] = doTaskObj.createTime
             dict['status'] = doTaskObj.status
             dict['getTaskId'] = doTaskObj.getTaskId
+            try:
+                getTaskObj = getTask.objects.get(id=doTaskObj.getTaskId)
+                oneuser = user.objects.get(id=getTaskObj.userId)
+                dict['userInfo'] = {"id": oneuser.id, "isEnabled": oneuser.isEnabled,
+                                    "createTime": oneuser.createTime, "openId": oneuser.openId,
+                                    "trueName": oneuser.trueName,
+                                    "name": oneuser.name, "address": oneuser.address, "phone": oneuser.phone,
+                                    "role": oneuser.role}
+                onecarInfo = carInfo.objects.get(id=getTaskObj.carId)
+                imgsJosn = json.loads(onecarInfo.adImgs)
+                dict['carInfo'] = {"status": onecarInfo.status, "id": onecarInfo.id, "carNum": onecarInfo.carNum,
+                                   "carModel": onecarInfo.carModel, "remark": onecarInfo.remark, "adImgs": imgsJosn}
+                dict['taskInfo'] = makeDictaskInfo(taskInfo.objects.get(id=getTaskObj.taskId))
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
             try:
                 imgsJosn = json.loads(doTaskObj.adImgs)
             except BaseException as e:
