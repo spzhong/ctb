@@ -186,8 +186,8 @@ def adminCheckGetTask(request):
         # 1是审核通过，1是审核失败
         logger = logging.getLogger("django")
         logger.info('审核任务的状态：'+str(getisDone))
+        getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
         if intGetIsDone == 1 or intGetIsDone == 2:
-            getTaskObject = getTask.objects.get(id=checkRecordObj.businessId)
             # 判断车辆和任务的审核状态
             taskMsg = judgeAuditStatusTaskId(getTaskObject.taskId)
             if taskMsg != None:
@@ -199,7 +199,7 @@ def adminCheckGetTask(request):
             getTaskObject.save()
         # 释放审核的资源
         if intGetIsDone != 1:
-            taskInfoObj = taskInfo.objects.get(id=checkRecordObj.businessId)
+            taskInfoObj = taskInfo.objects.get(id=getTaskObject.taskId)
             taskInfoObj.collectionsNum = taskInfoObj.collectionsNum - 1
             taskInfoObj.save()
         checkRecordObj.save()
