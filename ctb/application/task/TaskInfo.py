@@ -26,9 +26,6 @@ def wxGetJoinTask(request):
     if userObj == None:
         return callBackDict
     # 领取审核通过的数据
-    logger = logging.getLogger("django")
-    logger.info("userId:"+str(userObj.id))
-    logger.info("openId:" + str(userObj.openId))
     getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
     list = []
     logger.info("openId:" + str(userObj.openId))
@@ -38,7 +35,6 @@ def wxGetJoinTask(request):
         dict["id"] = onegetTask.id
         dict["carId"] = onegetTask.carId
         dict["taskId"] = onegetTask.taskId
-        dict["isSendMateriel"] = onegetTask.isSendMateriel
         dict["status"] = onegetTask.status
         incomeStreamList = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId,getTaskId=onegetTask.id, status=0).order_by("-createTime")
         # 没有产生任何的订单
@@ -46,11 +42,15 @@ def wxGetJoinTask(request):
             dict['billingCycle'] = 0
         else:
             dict['billingCycle'] = incomeStreamList[0].createTime
-        # 查询最近的任务
-        checkRecordList = checkRecord.objects.filter(businessId=onegetTask.id).order_by("-createTime")
-        if len(checkRecordList) > 0:
-            lastCheckRecord = checkRecordList[0]
-            dict['lastCheckRecord'] = {"type":lastCheckRecord.type,"isDone":lastCheckRecord.isDone}
+        # 查询最近的一条执行任务
+        try:
+            checkRecordList = checkRecord.objects.filter(userId=userObj.id, type__in=[2, 3]).order_by("-createTime")
+            if len(checkRecordList) > 0:
+                lastCheckRecord = checkRecordList[0]
+                dict['lastCheckRecord'] = {"type": lastCheckRecord.type, "isDone": lastCheckRecord.isDone}
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
         list.append(dict)
     # 组装完数据的回调
     Comm.callBackSuccess(callBackDict, 1, list)
