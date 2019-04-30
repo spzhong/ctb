@@ -34,7 +34,6 @@ def wxGetJoinTask(request):
         dict["id"] = onegetTask.id
         dict["carId"] = onegetTask.carId
         dict["taskId"] = onegetTask.taskId
-        dict["status"] = onegetTask.status
         incomeStreamList = incomeStream.objects.filter(userId=userObj.id, openId=userObj.openId,getTaskId=onegetTask.id, status=0).order_by("-createTime")
         # 没有产生任何的订单
         if len(incomeStreamList)==0:

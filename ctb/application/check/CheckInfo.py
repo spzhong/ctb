@@ -290,7 +290,7 @@ def createIncomeStream(checkRecordObj,doTaskObject):
         # 获取当前的信息的流水
         unfinishedincomeStream = incomeStreamList[0]
         # 如果超过了28天就算有效的数据
-        if doTaskObject.createTime - unfinishedincomeStream.createTime >= (3600 * 1000):
+        if doTaskObject.createTime - unfinishedincomeStream.createTime >= (3600*1000/10):
         #if doTaskObject.createTime - unfinishedincomeStream.createTime >= (taskInfoObj.billingCycle * 30 * 24*3600*1000):
             try:
                 unfinishedincomeStream.endTime = doTaskObject.createTime
@@ -304,7 +304,7 @@ def createIncomeStream(checkRecordObj,doTaskObject):
                     return "当前任务已经删除，或是已截止"
                 # 判断是否，有下一个周期
                 #if (taskInfoObj.deadline-doTaskObject.createTime) < (taskInfoObj.billingCycle * 30 * 24 * 3600 * 1000):
-                if (taskInfoObj.deadline - doTaskObject.createTime) < (3600*1000):
+                if (taskInfoObj.deadline - doTaskObject.createTime) < (3600*1000/10):
                     logger = logging.getLogger("django")
                     logger.info("小于一个周期的时候，就不创建未来的订单")
                     return "小于一个周期的时候，不创建未来的订单"
