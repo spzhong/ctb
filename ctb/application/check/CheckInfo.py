@@ -202,6 +202,9 @@ def adminCheckGetTask(request):
             taskInfoObj = taskInfo.objects.get(id=getTaskObject.taskId)
             taskInfoObj.collectionsNum = taskInfoObj.collectionsNum - 1
             taskInfoObj.save()
+            # 删除领取任务的信息
+            getTaskObject.delate()
+            getTaskObject.save()
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict, 1, checkRecordObj.id)
     except BaseException as e:
