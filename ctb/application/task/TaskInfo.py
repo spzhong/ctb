@@ -28,7 +28,6 @@ def wxGetJoinTask(request):
     # 领取审核通过的数据
     getTaskList = getTask.objects.filter(userId=userObj.id, openId=userObj.openId)
     list = []
-    logger.info("openId:" + str(userObj.openId))
     for onegetTask in getTaskList:
         dict = {}
         # 查询未完成的订单
