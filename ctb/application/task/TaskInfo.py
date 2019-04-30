@@ -12,6 +12,7 @@ from ctb.models import getTask
 from ctb.models import doTask
 from ctb.models import incomeStream
 from ..check import CheckInfo
+from ctb.models import checkRecord
 
 from .. import Comm
 from .. import Jurisdiction
@@ -45,6 +46,11 @@ def wxGetJoinTask(request):
             dict['billingCycle'] = 0
         else:
             dict['billingCycle'] = incomeStreamList[0].createTime
+        # 查询最近的任务
+        checkRecordList = checkRecord.objects.filter(businessId=onegetTask.id).order_by("-createTime")
+        if len(checkRecordList) > 0:
+            lastCheckRecord = checkRecordList[0]
+            dict['lastCheckRecord'] = {"type":lastCheckRecord.type,"isDone":lastCheckRecord.isDone}
         list.append(dict)
     # 组装完数据的回调
     Comm.callBackSuccess(callBackDict, 1, list)
