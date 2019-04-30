@@ -203,7 +203,7 @@ def adminCheckGetTask(request):
             taskInfoObj.collectionsNum = taskInfoObj.collectionsNum - 1
             taskInfoObj.save()
             # 删除领取任务的信息
-            getTaskObject.delate()
+            getTaskObject.delete()
             getTaskObject.save()
         checkRecordObj.save()
         return Comm.callBackSuccess(callBackDict, 1, checkRecordObj.id)
