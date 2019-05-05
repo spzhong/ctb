@@ -77,7 +77,7 @@ class taskInfo(models.Model):
     # 备注说明：免责以及其它补充的信息
     remark = models.CharField(max_length=1024,null=True)
     # 结算周期，单位是月
-    billingCycle = models.IntegerField(default=0)
+    billingCycle = models.FloatField(default=0)
     # 活动范围(默认为空，设计的点是：要求在用户活动范围，多少米以内，方可领取)，后期预留
     activityRange = models.IntegerField(default=0,null=True)
     createTime = models.BigIntegerField(default=0)
