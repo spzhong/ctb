@@ -40,6 +40,13 @@ def wxGetJoinTask(request):
             dict['billingCycle'] = 0
         else:
             dict['billingCycle'] = incomeStreamList[0].createTime
+
+        try:
+            taskInfoObj = taskInfo.objects.get(id=onegetTask.taskId)
+            dict['taskInfo'] = {'id':taskInfoObj.id,"deadline":taskInfoObj.deadline,"createTime":taskInfoObj.createTime,"billingCycle":taskInfoObj.billingCycle,"status":taskInfoObj.status}
+        except BaseException as e:
+            logger = logging.getLogger("django")
+            logger.info(str(e))
         # 查询最近的一条执行任务
         try:
             checkRecordList = checkRecord.objects.filter(userId=userObj.id, type__in=[2, 3]).order_by("-createTime")
