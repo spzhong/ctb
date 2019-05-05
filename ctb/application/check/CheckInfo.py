@@ -459,7 +459,16 @@ def adminBusinessInfo(request):
         try:
             onecarInfo = carInfo.objects.get(id=getbusinessId)
             imgsJosn = json.loads(onecarInfo.adImgs)
-            return Comm.callBackSuccess(callBackDict, 1, {"status": onecarInfo.status, "id": onecarInfo.id, "carNum": onecarInfo.carNum,
+            try:
+                oneuser = user.objects.get(id=onecarInfo.userId)
+                dictInfo = {"id": oneuser.id, "isEnabled": oneuser.isEnabled,
+                    "createTime": oneuser.createTime, "openId": oneuser.openId, "trueName": oneuser.trueName,
+                    "name": oneuser.name, "address": oneuser.address, "phone": oneuser.phone,
+                    "role": oneuser.role}
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
+            return Comm.callBackSuccess(callBackDict, 1, {"userInfo":dictInfo,"status": onecarInfo.status, "id": onecarInfo.id, "carNum": onecarInfo.carNum,
                          "carModel": onecarInfo.carModel, "remark": onecarInfo.remark, "adImgs": imgsJosn})
         except BaseException as e:
             logger = logging.getLogger("django")
