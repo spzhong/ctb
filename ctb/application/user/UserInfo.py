@@ -22,6 +22,7 @@ def wxegisterSign(request):
     try:
         # 查询判断用户是否已经存在的
         userList = user.objects.filter(openId=getopenId)
+        createTime = int(time.time() * 1000)
         if len(userList) > 0:
             dict = {}
             dict['userId'] =  userList[0].id
@@ -30,9 +31,11 @@ def wxegisterSign(request):
             dict['trueName'] = userList[0].trueName
             dict['phone'] = userList[0].phone
             dict['isEnabled'] = userList[0].isEnabled
+            # 保存最后一次登录的时间
+            userList[0].loginTime = createTime
+            userList[0].save()
             Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
-        createTime = int(time.time() * 1000)
         if getopenId == '10000':
             userObj = user.objects.create(openId=getopenId, role=0, createTime=createTime)
         else:
@@ -72,7 +75,7 @@ def adminGetAllUsers(request):
     list = []
     for oneuser in userList:
         carNum = carInfo.objects.filter(userId=oneuser.id).count()
-        list.append({"carNum":carNum,"id":oneuser.id,"isEnabled":oneuser.isEnabled,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
+        list.append({"carNum":carNum,"id":oneuser.id,"isEnabled":oneuser.isEnabled,"loginTime":oneuser.loginTime,"createTime":oneuser.createTime,"openId":oneuser.openId,"trueName":oneuser.trueName,"name":oneuser.name,"address":oneuser.address,"phone":oneuser.phone,"role":oneuser.role})
     callBackDict['totalNum'] = user.objects.all().count()
     return Comm.callBackSuccess(callBackDict, 1, list)
 
