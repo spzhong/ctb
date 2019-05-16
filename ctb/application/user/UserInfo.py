@@ -31,15 +31,16 @@ def wxegisterSign(request):
             dict['trueName'] = userList[0].trueName
             dict['phone'] = userList[0].phone
             dict['isEnabled'] = userList[0].isEnabled
+            dict['loginTime'] = createTime
             # 保存最后一次登录的时间
             userList[0].loginTime = createTime
             userList[0].save()
             Comm.callBackSuccess(callBackDict, 1,dict)
             return callBackDict
         if getopenId == '10000':
-            userObj = user.objects.create(openId=getopenId, role=0, createTime=createTime)
+            userObj = user.objects.create(openId=getopenId, role=0,loginTime = createTime, createTime=createTime)
         else:
-            userObj = user.objects.create(openId=getopenId, role=2, createTime=createTime)
+            userObj = user.objects.create(openId=getopenId, role=2, loginTime = createTime,createTime=createTime)
         userObj.save()
         dict = {}
         dict['userId'] = userObj.id
