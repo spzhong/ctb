@@ -72,7 +72,7 @@ def adminGetAllUsers(request):
         getpageSize = 20
     else:
         getpageSize = int(getpageSize)
-    userList = user.objects.all().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+    userList = user.objects.all().order_by("-loginTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for oneuser in userList:
         carNum = carInfo.objects.filter(userId=oneuser.id).count()

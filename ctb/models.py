@@ -26,7 +26,7 @@ class user(models.Model):
     # 是否是启用，默认是0，1是关闭
     isEnabled = models.IntegerField(default=0)
     # 登录的时间
-    loginTime = models.CharField(max_length=100,null=True)
+    loginTime = models.BigIntegerField(default=0)
 
 
 
