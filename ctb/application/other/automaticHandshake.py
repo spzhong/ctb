@@ -28,6 +28,8 @@ def appAutoHandshake(request):
         projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
         # 分析IP
         dictIP = analysisIP(request)
+        logger = logging.getLogger("django")
+        logger.info(str(dictIP))
         getauroraTag = "default"
         if dictIP["province"]:
             getauroraTag = dictIP["province"]
@@ -36,7 +38,9 @@ def appAutoHandshake(request):
         if projectInfoObj.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
             getisBlacklistUser = 1
         # 创建一条用户的记录数据
+        logger.info("1")
         createAndSelecteUser(getbundleIdentifier, getclientUUId, getauroraTag,getisBlacklistUser,dictIP)
+        logger.info("2")
         # 关闭的状态
         if projectInfoObj.isOpen == 0:
             return Comm.callBackSuccess(callBackDict, 1, {"auroraTag":"default","token":str(uuid.uuid1())+str(uuid.uuid1())})
@@ -71,7 +75,7 @@ def appAutoHandshake(request):
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
-        Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default","token": uuid.uuid1() + uuid.uuid1()})
+        Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default","token": str(uuid.uuid1()) + str(uuid.uuid1())})
     return callBackDict
 
 
