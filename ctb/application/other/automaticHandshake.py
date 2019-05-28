@@ -185,6 +185,8 @@ def openAndCloseProject(request):
         try:
             projectInfoObjLsit[0].isopen = int(getisOpen)
             projectInfoObjLsit[0].save()
+            logger = logging.getLogger("django")
+            logger.info('kai guan : '+str(projectInfoObjLsit[0].isopen))
             Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
         except BaseException as e:
             Comm.callBackSuccess(callBackDict, 0, "更改状态失败")
