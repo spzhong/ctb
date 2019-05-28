@@ -105,7 +105,6 @@ def analysisIP(request):
     # 判断请求的域名
     ip = get_client_ip(request)
     logger = logging.getLogger("django")
-    logger.info("01")
     logger.info(ip)
     country = None;
     region = None;
@@ -116,15 +115,18 @@ def analysisIP(request):
         res = urllib2.urlopen(url,timeout=2)
         page_source = res.read().decode('utf-8')
         decode_json = json.loads(page_source)
-        logger.info(str(decode_json))
+
         country = decode_json['data']['country']
         region = decode_json['data']['region']
         city = decode_json['data']['city']
-        if len(country) == 0 or country == "XX":
+        logger.info(str(country))
+        logger.info(str(region))
+        logger.info(str(city))
+        if country == "XX":
             country = None
-        if len(region == 0) or region == "XX":
+        if region == "XX":
             region = None
-        if len(city == 0) or city == "XX":
+        if city == "XX":
             city = None
             # 解析出来的域名
     return {"country":country,"province":region,"city":city,"ip":ip}
