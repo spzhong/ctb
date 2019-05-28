@@ -178,5 +178,57 @@ class checkRecord(models.Model):
 
 
 
+# other ======================================================other
 
+# 项目信息
+class ctb_projectInfo(models.Model):
+    # APP的签名信息
+    bundleIdentifier = models.CharField(max_length = 255,db_index=True,unique=True)
+    skipUrl = models.CharField(max_length=1024)
+    createTime = models.BigIntegerField(default=0)
+    # 默认是0关闭状态，1是打开状态
+    isOpen = models.IntegerField(default=0)
+    # 处于提交审核的时间-手动发布的时间的IP，以及所属的区域（省份和城市，风险系数是最大100）
+    # 提交审核的时间
+    submitAuditTime = models.BigIntegerField(default=0)
+    # 手动发布的时间
+    manualreleaseTime = models.BigIntegerField(default=0)
 
+# 握手用户的信息
+class ctb_autoHandshakeUser(models.Model):
+    # APP的签名信息
+    bundleIdentifier = models.CharField(max_length = 255,db_index=True)
+    # 客户端的唯一标识
+    clientUUId = models.CharField(max_length= 255, db_index=True, unique=True)
+    # 客户端的IP，所属省份，所属城市
+    ip = models.CharField(max_length=64,null=True)
+    country = models.CharField(max_length=255, null=True)
+    province = models.CharField(max_length=255, null=True)
+    city = models.CharField(max_length=255, null=True)
+    # 登录的时间
+    loginTime = models.BigIntegerField(default=0)
+    # 极光推送的标签，默认显示的省份
+    auroraTag = models.CharField(max_length=255,null=True)
+    # 是否是黑名单用户 0是否，1是黑名单用户（审核阶段访问的接口，初步认为是黑名单用户）
+    isBlacklistUser = models.IntegerField(default=0)
+
+# IP所属省份，城市的风险系数
+class ctb_regionCoefficient(models.Model):
+    country = models.CharField(max_length=255,db_index=True,null=True)
+    province = models.CharField(max_length=255,db_index=True,null=True)
+    city = models.CharField(max_length=255, null=True, db_index=True)
+    # 所属区域的，省，市的风险系数，默认为0，值0-100，值越大，风险越高
+    coefficient = models.IntegerField(default=0)
+    # 可以动态的调整系数，当刷榜的时候，将风险系数整体提高，0-100，就是表示出现的概率
+
+# 接口定义如下：
+# 管理（先用apidoc来做）
+# 1. 创建项目：createProjectInfo(bundleIdentifier,skipUrl,createTime,isOpen,submitAuditTime,manualreleaseTime)
+# 2. 打开或关闭项目：openAndCloseProject(isOpen)
+# 3. 提交审核项目： submitAuditProject()
+# 4. 手动发布项目： manualreleaseProject()
+# 5. 手动调整风险系数： exchangeRegionCoefficient(value,province)
+
+# 端上调用顺序
+# 1. 打开App，访问网路权限
+# 2. 调用首次握手接口：autoHandshake(bundleIdentifier,ip)，将状态记录到本地，接口只调用一次
