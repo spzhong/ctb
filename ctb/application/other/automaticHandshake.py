@@ -5,7 +5,7 @@ import json
 import time
 import sys
 import uuid
-import urllib
+import urllib2
 import httplib
 sys.path.append('...')
 from ctb.models import otherProjectInfo
@@ -39,7 +39,7 @@ def appAutoHandshake(request):
         createAndSelecteUser(getbundleIdentifier, getclientUUId, getauroraTag,getisBlacklistUser,dictIP)
         # 关闭的状态
         if projectInfoObj.isOpen == 0:
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag":"default","token":uuid.uuid1()+uuid.uuid1()})
+            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag":"default","token":str(uuid.uuid1())+str(uuid.uuid1())})
         # 审核中的状态,# 注意此时标记为黑名单
         if getisBlacklistUser == 1:
             try:
@@ -49,7 +49,7 @@ def appAutoHandshake(request):
                 logger = logging.getLogger("django")
                 logger.info(str(e))
             return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default",
-                                                          "token": uuid.uuid1() + uuid.uuid1()})
+                                                          "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 跳过审核状态的情况下--正常的逻辑情况下
         # 判断IP区域的状态
         lastCoefficient = 0
@@ -63,11 +63,11 @@ def appAutoHandshake(request):
                 break
         if lastCoefficient == 0:
             return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default",
-                                                          "token": uuid.uuid1() + uuid.uuid1()})
+                                                          "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
             return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,
-                                                          "token": uuid.uuid1() + uuid.uuid1()})
+                                                          "token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
@@ -108,8 +108,7 @@ def analysisIP(request):
     if len(ip) > 0:
         url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip
         # 同步发送网络请求
-        myrequest = urllib.request.Request(url=url)
-        res = urllib.request.urlopen(myrequest, timeout=2)
+        res = urllib2.urlopen(url,timeout=2)
         page_source = res.read().decode('utf-8')
         decode_json = json.loads(page_source)
         country = decode_json['data']['country']
