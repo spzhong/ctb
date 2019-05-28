@@ -181,7 +181,7 @@ def openAndCloseProject(request):
             Comm.callBackFail(callBackDict, 0, "项目不存在")
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
-                return Comm.callBackFail(callBackDict, 0, getbundleIdentifier + "，该项目还尚未审核通过")
+                return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
         projectInfoObjLsit[0].isopen = int(getisOpen)
         projectInfoObjLsit[0].save()
         Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
