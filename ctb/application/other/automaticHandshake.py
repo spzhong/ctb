@@ -85,7 +85,7 @@ def createAndSelecteUser(getbundleIdentifier,getclientUUId,getauroraTag,getisBla
     try:
         autoHandshakeUserObj = otherAutoHandshakeUser.objects.create(isBlacklistUser=getisBlacklistUser,bundleIdentifier=getbundleIdentifier, clientUUId=getclientUUId,auroraTag=getauroraTag,loginTime=getcreateTime)
         if dictIP['ip']:
-            autoHandshakeUserObj.country = dictIP['ip']
+            autoHandshakeUserObj.ip = dictIP['ip']
         if dictIP['country']:
             autoHandshakeUserObj.country = dictIP['country']
         if dictIP['province']:
@@ -172,18 +172,19 @@ def openAndCloseProject(request):
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
     getisOpen = Comm.tryTranslate(request, "isOpen")
-    if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
-        return callBackDict
     if int(getisOpen) < 0 or int(getisOpen) > 1 :
         Comm.callBackFail(callBackDict, 0, "项目的开关只能是0或1")
         return callBackDict
     try:
         projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
         if len(projectInfoObjLsit) == 0:
-            Comm.callBackFail(callBackDict, 0, "项目签名不存在")
+            Comm.callBackFail(callBackDict, 0, "项目不存在")
+        if int(getisOpen) == 1:
+            if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
+                return Comm.callBackFail(callBackDict, 0, getbundleIdentifier + "，该项目还尚未审核通过")
         projectInfoObjLsit[0].isopen = int(getisOpen)
         projectInfoObjLsit[0].save()
-        Comm.callBackSuccess(callBackDict, 1, "创建成功")
+        Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
@@ -197,13 +198,36 @@ def submitAuditProject(request):
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
-
+    projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
+    if len(projectInfoObjLsit) == 0:
+        Comm.callBackFail(callBackDict, 0, "项目不存在")
+    try:
+        projectInfoObjLsit[0].submitAuditTime = int(time.time() * 1000)
+        projectInfoObjLsit[0].save()
+        Comm.callBackSuccess(callBackDict, 1, "已提交审核")
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackFail(callBackDict, 0, "系统异常")
+    return callBackDict
 
 def manualreleaseProject(request):
     callBackDict = {}
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
+    projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
+    if len(projectInfoObjLsit) == 0:
+        Comm.callBackFail(callBackDict, 0, "项目不存在")
+    try:
+        projectInfoObjLsit[0].manualreleaseTime = int(time.time() * 1000)
+        projectInfoObjLsit[0].save()
+        Comm.callBackSuccess(callBackDict, 1, "appstore已确认审核通过了")
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackFail(callBackDict, 0, "系统异常")
+    return callBackDict
 
 
 def exchangeRegionCoefficient(request):
