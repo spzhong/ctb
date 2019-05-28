@@ -108,8 +108,8 @@ def analysisIP(request):
     if len(ip) > 0:
         url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip
         # 同步发送网络请求
-        request = urllib.request.Request(url=url)
-        res = urllib.request.urlopen(request, timeout=2)
+        myrequest = urllib.request.Request(url=url)
+        res = urllib.request.urlopen(myrequest, timeout=2)
         page_source = res.read().decode('utf-8')
         decode_json = json.loads(page_source)
         country = decode_json['data']['country']
