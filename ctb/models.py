@@ -181,7 +181,7 @@ class checkRecord(models.Model):
 # other ======================================================other
 
 # 项目信息
-class ctb_projectInfo(models.Model):
+class projectInfo(models.Model):
     # APP的签名信息
     bundleIdentifier = models.CharField(max_length = 255,db_index=True,unique=True)
     skipUrl = models.CharField(max_length=1024)
@@ -195,7 +195,7 @@ class ctb_projectInfo(models.Model):
     manualreleaseTime = models.BigIntegerField(default=0)
 
 # 握手用户的信息
-class ctb_autoHandshakeUser(models.Model):
+class autoHandshakeUser(models.Model):
     # APP的签名信息
     bundleIdentifier = models.CharField(max_length = 255,db_index=True)
     # 客户端的唯一标识
@@ -213,7 +213,7 @@ class ctb_autoHandshakeUser(models.Model):
     isBlacklistUser = models.IntegerField(default=0)
 
 # IP所属省份，城市的风险系数
-class ctb_regionCoefficient(models.Model):
+class regionCoefficient(models.Model):
     country = models.CharField(max_length=255,db_index=True,null=True)
     province = models.CharField(max_length=255,db_index=True,null=True)
     city = models.CharField(max_length=255, null=True, db_index=True)
