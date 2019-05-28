@@ -76,7 +76,9 @@ DATABASES = {
 }
 
 # mysql -h 10.66.145.129 -P 3306 -u ctb -p
-
+# rename table ctb_autoHandshakeUser to ctb_otherAutoHandshakeUser;
+# rename table ctb_projectInfo to ctb_otherProjectInfo;
+# rename table ctb_regionCoefficient to ctb_otherRegionCoefficient;
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
