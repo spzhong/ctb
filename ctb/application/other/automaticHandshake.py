@@ -182,9 +182,12 @@ def openAndCloseProject(request):
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
-        projectInfoObjLsit[0].isopen = int(getisOpen)
-        projectInfoObjLsit[0].save()
-        Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
+        try:
+            projectInfoObjLsit[0].isopen = int(getisOpen)
+            projectInfoObjLsit[0].save()
+            Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
+        except BaseException as e:
+            Comm.callBackSuccess(callBackDict, 0, "更改状态失败")
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
