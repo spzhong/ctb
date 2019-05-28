@@ -114,19 +114,14 @@ def analysisIP(request):
         # 同步发送网络请求
         res = urllib2.urlopen(url,timeout=2)
         page_source = res.read().decode('utf-8')
-        decode_json = json.loads(page_source)
-
-        country = decode_json['data']['country']
-        region = decode_json['data']['region']
-        city = decode_json['data']['city']
-        logger.info(str(country))
-        logger.info(str(region))
-        logger.info(str(city))
-        if country == "XX":
+        try:
+            decode_json = json.loads(page_source)
+            country = decode_json['data']['country']
+            region = decode_json['data']['region']
+            city = decode_json['data']['city']
+        except:
             country = None
-        if region == "XX":
             region = None
-        if city == "XX":
             city = None
             # 解析出来的域名
     return {"country":country,"province":region,"city":city,"ip":ip}
