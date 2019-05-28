@@ -75,7 +75,7 @@ DATABASES = {
         }
 }
 
-# mysql -h 10.66.145.129 -P 3306 -u root -p ctb
+# mysql -h 10.66.145.129 -P 3306 -u ctb -p
 
 
 # Internationalization

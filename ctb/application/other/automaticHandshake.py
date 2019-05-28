@@ -8,9 +8,9 @@ import uuid
 import urllib
 import httplib
 sys.path.append('...')
-from ctb.models import projectInfo
-from ctb.models import autoHandshakeUser
-from ctb.models import regionCoefficient
+from ctb.models import otherProjectInfo
+from ctb.models import otherAutoHandshakeUser
+from ctb.models import otherRegionCoefficient
 from .. import Comm
 
 
@@ -25,7 +25,7 @@ def appAutoHandshake(request):
         return callBackDict
     #查询具体的项目信息
     try:
-        projectInfoObj = projectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
+        projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
         # 分析IP
         dictIP = analysisIP(request)
         getauroraTag = "default"
@@ -33,7 +33,7 @@ def appAutoHandshake(request):
             getauroraTag = dictIP["province"]
         # 判断提交审核的时间--判断发布通过的时间(审核中的)
         getisBlacklistUser = 0
-        if projectInfo.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
+        if projectInfoObj.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
             getisBlacklistUser = 1
         # 创建一条用户的记录数据
         createAndSelecteUser(getbundleIdentifier, getclientUUId, getauroraTag,getisBlacklistUser,dictIP)
@@ -43,7 +43,7 @@ def appAutoHandshake(request):
         # 审核中的状态,# 注意此时标记为黑名单
         if getisBlacklistUser == 1:
             try:
-                regionCoefficientObj = regionCoefficient.objects.create(country=dictIP["country"],province=dictIP["province"],city=dictIP["city"],coefficient=100)
+                regionCoefficientObj = otherRegionCoefficient.objects.create(country=dictIP["country"],province=dictIP["province"],city=dictIP["city"],coefficient=100)
                 regionCoefficientObj.save()
             except BaseException as e:
                 logger = logging.getLogger("django")
@@ -54,7 +54,7 @@ def appAutoHandshake(request):
         # 判断IP区域的状态
         lastCoefficient = 0
         lastProvince = 'default'
-        regionCoefficientList = regionCoefficient.objects.all()
+        regionCoefficientList = otherRegionCoefficient.objects.all()
         # 按照省份进行判断
         for regionCoefficientoneObj in regionCoefficientList:
             if dictIP["province"] and regionCoefficientoneObj.city == dictIP["province"]:
@@ -79,7 +79,7 @@ def createAndSelecteUser(getbundleIdentifier,getclientUUId,getauroraTag,getisBla
     getcreateTime = int(time.time() * 1000)
     autoHandshakeUserObj = None
     try:
-        autoHandshakeUserObj = autoHandshakeUser.objects.create(isBlacklistUser=getisBlacklistUser,bundleIdentifier=getbundleIdentifier, clientUUId=getclientUUId,auroraTag=getauroraTag,loginTime=getcreateTime)
+        autoHandshakeUserObj = otherAutoHandshakeUser.objects.create(isBlacklistUser=getisBlacklistUser,bundleIdentifier=getbundleIdentifier, clientUUId=getclientUUId,auroraTag=getauroraTag,loginTime=getcreateTime)
         if dictIP['ip']:
             autoHandshakeUserObj.country = dictIP['ip']
         if dictIP['country']:
@@ -151,7 +151,7 @@ def createProjectInfo(request):
         return callBackDict
     try:
         getcreateTime = int(time.time() * 1000)
-        projectInfoObj = projectInfo.objects.create(bundleIdentifier=getbundleIdentifier, skipUrl=getskipUrl,createTime=getcreateTime)
+        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier, skipUrl=getskipUrl,createTime=getcreateTime)
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "创建成功")
     except BaseException as e:
@@ -176,7 +176,7 @@ def openAndCloseProject(request):
         Comm.callBackFail(callBackDict, 0, "项目的开关只能是0或1")
         return callBackDict
     try:
-        projectInfoObjLsit = projectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
+        projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
         if len(projectInfoObjLsit) == 0:
             Comm.callBackFail(callBackDict, 0, "项目签名不存在")
         projectInfoObjLsit[0].isopen = int(getisOpen)
@@ -215,9 +215,9 @@ def exchangeRegionCoefficient(request):
 def delAll(request):
     callBackDict = {}
     try:
-        projectInfo.objects.all().delete()
-        autoHandshakeUser.objects.all().delete()
-        regionCoefficient.objects.all().delete()
+        otherProjectInfo.objects.all().delete()
+        otherAutoHandshakeUser.objects.all().delete()
+        otherRegionCoefficient.objects.all().delete()
         Comm.callBackSuccess(callBackDict, 1, "projectInfo/autoHandshakeUser/regionCoefficient 全部已经清空")
     except BaseException as e:
         logger = logging.getLogger("django")
@@ -230,7 +230,7 @@ def delAll(request):
 def allProjectInfoList(request):
     callBackDict = {}
     pageData = []
-    projectInfoList = projectInfo.objects.all()
+    projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
         pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
@@ -240,7 +240,7 @@ def allProjectInfoList(request):
 def allAutoHandshakeUser(request):
     callBackDict = {}
     pageData = []
-    autoHandshakeUserList = autoHandshakeUser.objects.all()
+    autoHandshakeUserList = otherAutoHandshakeUser.objects.all()
     for oneautoHandshake in autoHandshakeUserList:
         pageData.append({"bundleIdentifier":oneautoHandshake.bundleIdentifier,"clientUUId":oneautoHandshake.clientUUId,"ip":oneautoHandshake.ip,"country":oneautoHandshake.country,"province":oneautoHandshake.province,"city":oneautoHandshake.city,"auroraTag":oneautoHandshake.auroraTag,"isBlacklistUser":oneautoHandshake.isBlacklistUser})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
