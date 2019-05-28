@@ -5,7 +5,7 @@ import json
 import time
 import sys
 import uuid
-import urllib.request
+import urllib
 import httplib
 sys.path.append('...')
 from ctb.models import projectInfo
