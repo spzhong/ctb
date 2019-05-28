@@ -26,9 +26,9 @@ def appAutoHandshake(request):
     #查询具体的项目信息
     try:
         projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
+        logger = logging.getLogger("django")
         # 分析IP
         dictIP = analysisIP(request)
-        logger = logging.getLogger("django")
         logger.info(str(dictIP))
         getauroraTag = "default"
         if dictIP["province"]:
@@ -105,6 +105,7 @@ def analysisIP(request):
     # 判断请求的域名
     ip = get_client_ip(request)
     logger = logging.getLogger("django")
+    logger.info("01")
     logger.info(ip)
     country = None;
     region = None;
@@ -115,6 +116,7 @@ def analysisIP(request):
         res = urllib2.urlopen(url,timeout=2)
         page_source = res.read().decode('utf-8')
         decode_json = json.loads(page_source)
+        logger.info(str(decode_json))
         country = decode_json['data']['country']
         region = decode_json['data']['region']
         city = decode_json['data']['city']
