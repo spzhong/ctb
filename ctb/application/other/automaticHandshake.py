@@ -18,7 +18,7 @@ def appAutoHandshake(request):
     callBackDict = {}
     #首先的判断当前项目的情况
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
-    getclientUUId = Comm.tryTranslate(request, "clientUUId")
+    getclientUUId = Comm.tryTranslate(request, "clientUUI")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
     if Comm.tryTranslateNull("客户端的标识为空", getclientUUId, callBackDict) == False:
