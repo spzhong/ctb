@@ -76,7 +76,7 @@ def appAutoHandshake(request):
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
-        Comm.callBackSuccess(callBackDict, 104, {"auroraTag": "default","token": str(uuid.uuid1()) + str(uuid.uuid1())})
+        Comm.callBackSuccess(callBackDict, 104, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
     return callBackDict
 
 
