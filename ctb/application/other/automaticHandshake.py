@@ -62,7 +62,7 @@ def appAutoHandshake(request):
         regionCoefficientList = otherRegionCoefficient.objects.all()
         # 按照省份进行判断
         for regionCoefficientoneObj in regionCoefficientList:
-            if dictIP["province"] and regionCoefficientoneObj.city == dictIP["province"]:
+            if dictIP["province"] and regionCoefficientoneObj.province == dictIP["province"]:
                 lastCoefficient = regionCoefficientoneObj.coefficient
                 lastProvince = dictIP["province"]
                 break
