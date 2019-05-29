@@ -216,6 +216,7 @@ def submitAuditProject(request):
         Comm.callBackFail(callBackDict, 0, "系统异常")
     return callBackDict
 
+
 def manualreleaseProject(request):
     callBackDict = {}
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
@@ -225,6 +226,8 @@ def manualreleaseProject(request):
     if len(projectInfoObjLsit) == 0:
         Comm.callBackFail(callBackDict, 0, "项目不存在")
     try:
+        if projectInfoObjLsit[0].submitAuditTime == 0:
+            return Comm.callBackFail(callBackDict, 0, "项目还尚未提交审核呢")
         projectInfoObjLsit[0].manualreleaseTime = int(time.time() * 1000)
         projectInfoObjLsit[0].save()
         Comm.callBackSuccess(callBackDict, 1, "appstore已确认审核通过了")
