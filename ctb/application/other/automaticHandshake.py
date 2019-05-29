@@ -50,11 +50,11 @@ def appAutoHandshake(request):
             except BaseException as e:
                 logger = logging.getLogger("django")
                 logger.info(str(e))
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default",
+            return Comm.callBackSuccess(callBackDict, 100, {"auroraTag": "default",
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 如果是关闭的状态
         if projectInfoObj.isOpen == 0:
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag":"default","token":str(uuid.uuid1())+str(uuid.uuid1())})
+            return Comm.callBackSuccess(callBackDict, 101, {"auroraTag":"default","token":str(uuid.uuid1())+str(uuid.uuid1())})
         # 跳过审核状态的情况下--正常的逻辑情况下
         # 判断IP区域的状态
         lastCoefficient = 0
@@ -67,16 +67,16 @@ def appAutoHandshake(request):
                 lastProvince = dictIP["province"]
                 break
         if lastCoefficient == 0:
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default",
+            return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": "default",
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,"skipUrl":projectInfoObj.skipUrl,
+            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag": lastProvince,"skipUrl":projectInfoObj.skipUrl,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
-        Comm.callBackSuccess(callBackDict, 1, {"auroraTag": "default","token": str(uuid.uuid1()) + str(uuid.uuid1())})
+        Comm.callBackSuccess(callBackDict, 104, {"auroraTag": "default","token": str(uuid.uuid1()) + str(uuid.uuid1())})
     return callBackDict
 
 
