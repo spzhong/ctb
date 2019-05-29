@@ -71,7 +71,7 @@ def appAutoHandshake(request):
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
-            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,
+            return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,"skipUrl":projectInfoObj.skipUrl,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
