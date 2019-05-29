@@ -29,6 +29,8 @@ def index(request,route):
         callBackDict = automaticHandshake.delAll(request)
     elif route == 'allProjectInfoList':
         callBackDict = automaticHandshake.allProjectInfoList(request)
+    elif route == 'allOtherRegionCoefficient':
+        callBackDict = automaticHandshake.allOtherRegionCoefficient(request)
     elif route == 'allAutoHandshakeUser':
         callBackDict = automaticHandshake.allAutoHandshakeUser(request)
     else:

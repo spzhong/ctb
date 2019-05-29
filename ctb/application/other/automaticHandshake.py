@@ -266,6 +266,15 @@ def allProjectInfoList(request):
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 
+def allOtherRegionCoefficient(request):
+    callBackDict = {}
+    pageData = []
+    otherRegionCoefficientList = otherRegionCoefficient.objects.all()
+    for otherRegionInfo in otherRegionCoefficientList:
+        pageData.append({"country":otherRegionInfo.country,"province":otherRegionInfo.province,"city":otherRegionInfo.city,"coefficient":otherRegionInfo.coefficient})
+    return Comm.callBackSuccess(callBackDict, 1, pageData)
+
+
 
 def allAutoHandshakeUser(request):
     callBackDict = {}
@@ -274,4 +283,6 @@ def allAutoHandshakeUser(request):
     for oneautoHandshake in autoHandshakeUserList:
         pageData.append({"bundleIdentifier":oneautoHandshake.bundleIdentifier,"clientUUId":oneautoHandshake.clientUUId,"ip":oneautoHandshake.ip,"country":oneautoHandshake.country,"province":oneautoHandshake.province,"city":oneautoHandshake.city,"auroraTag":oneautoHandshake.auroraTag,"isBlacklistUser":oneautoHandshake.isBlacklistUser})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
+
+
 
