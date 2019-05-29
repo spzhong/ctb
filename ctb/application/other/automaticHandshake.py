@@ -66,7 +66,7 @@ def appAutoHandshake(request):
                 lastCoefficient = regionCoefficientoneObj.coefficient
                 lastProvince = dictIP["province"]
                 break
-        if lastCoefficient == 0:
+        if lastCoefficient > 0 :
             return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": "default",
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
