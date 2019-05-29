@@ -67,11 +67,11 @@ def appAutoHandshake(request):
                 lastProvince = dictIP["province"]
                 break
         if lastCoefficient > 0 :
-            return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": "default",
+            return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": lastProvince,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
-            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag": lastProvince,"skipUrl":projectInfoObj.skipUrl,
+            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag":"default","skipUrl":projectInfoObj.skipUrl,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
