@@ -159,8 +159,6 @@ def createProjectInfo(request):
     try:
         res = urllib2.urlopen(url, timeout=5)
         page_source = res.read().decode('utf-8')
-        logger = logging.getLogger("django")
-        logger.info(str(page_source))
         decode_json = json.loads(page_source)
         mySkipUrl = decode_json['Url']
     except BaseException as e:
