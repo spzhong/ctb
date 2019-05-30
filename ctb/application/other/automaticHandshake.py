@@ -38,9 +38,7 @@ def appAutoHandshake(request):
         if projectInfoObj.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
             getisBlacklistUser = 1
         # 创建一条用户的记录数据
-        logger.info("1")
         createAndSelecteUser(getbundleIdentifier, getclientUUId, getauroraTag,getisBlacklistUser,dictIP)
-        logger.info("2")
         # 关闭的状态
         # 审核中的状态,# 注意此时标记为黑名单
         if getisBlacklistUser == 1:
@@ -54,6 +52,24 @@ def appAutoHandshake(request):
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 如果是关闭的状态
         if projectInfoObj.isOpen == 0:
+            # 如果是关闭的状态
+            try:
+                url = projectInfoObj.skipUrl
+                logger = logging.getLogger("django")
+                logger.info(url)
+                # 同步发送网络请求
+                res = urllib2.urlopen(url, timeout=2)
+                page_source = res.read().decode('utf-8')
+                decode_json = json.loads(page_source)
+                Url =  decode_json['Url']
+                # 调用起来接口 # 调用起来接口
+                projectInfoObj.skipUrl = Url;
+                projectInfoObj.isOpen = 1;
+                projectInfoObj.save()
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info("调用接口的时候出问题了啊")
+                logger.info(str(e))
             return Comm.callBackSuccess(callBackDict, 101, {"auroraTag":"default","token":str(uuid.uuid1())+str(uuid.uuid1())})
         # 跳过审核状态的情况下--正常的逻辑情况下
         # 判断IP区域的状态
@@ -184,13 +200,6 @@ def openAndCloseProject(request):
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
-            # try:
-            #     # 同步发送网络请求
-            #     res = urllib2.urlopen(getsourceUrl, timeout=2)
-            #     page_source = res.read().decode('utf-8')
-            #     decode_json = json.loads(page_source)
-            #     Url = decode_json['Url']
-            # except:
         try:
             projectInfoObjLsit[0].isOpen = int(getisOpen)
             projectInfoObjLsit[0].save()
