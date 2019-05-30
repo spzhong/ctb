@@ -7,7 +7,7 @@ import schedule
 import time
 
 def job():
-    f = urllib.request.urlopen('http://appid.985-985.com:8088/getAppConfig.php?appid=chenspeed2')
+    f = urllib.urlopen('http://appid.985-985.com:8088/getAppConfig.php?appid=chenspeed2')
     print(f.read().decode('utf-8'))
     # 根据打印的信息
     # 调用我们自己的接口
