@@ -230,8 +230,9 @@ def submitAuditProject(request):
         Comm.callBackFail(callBackDict, 0, "项目不存在")
     try:
         projectInfoObjLsit[0].submitAuditTime = int(time.time() * 1000)
+        projectInfoObjLsit[0].manualreleaseTime = 0
         projectInfoObjLsit[0].save()
-        Comm.callBackSuccess(callBackDict, 1, "已提交审核")
+        Comm.callBackSuccess(callBackDict, 1, "已提交审核，此时的发布时间为0")
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
