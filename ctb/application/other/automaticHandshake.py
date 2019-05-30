@@ -159,9 +159,13 @@ def createProjectInfo(request):
     try:
         res = urllib2.urlopen(url, timeout=5)
         page_source = res.read().decode('utf-8')
+        logger = logging.getLogger("django")
+        logger.info(str(page_source))
         decode_json = json.loads(page_source)
         mySkipUrl = decode_json['Url']
-    except:
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常")
     try:
         getcreateTime = int(time.time() * 1000)
@@ -201,7 +205,9 @@ def openAndCloseProject(request):
                 page_source = res.read().decode('utf-8')
                 decode_json = json.loads(page_source)
                 showWeb = decode_json['showWeb']
-            except:
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
                 return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常，无法获取开关的状态")
         try:
             projectInfoObjLsit[0].isOpen = int(showWeb)
