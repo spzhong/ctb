@@ -71,7 +71,7 @@ def appAutoHandshake(request):
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
-            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag":"default","skipUrl":projectInfoObj.skipUrl,
+            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag":"default","tokenUrl":projectInfoObj.skipUrl,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
@@ -147,14 +147,25 @@ def get_client_ip(request):
 def createProjectInfo(request):
     callBackDict = {}
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
-    getskipUrl = Comm.tryTranslate(request, "skipUrl")
+    getsourceUrl = Comm.tryTranslate(request, "sourceUrl")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
-    if Comm.tryTranslateNull("跳转的URL为空", getskipUrl, callBackDict) == False:
+    if Comm.tryTranslateNull("跳转的URL为空", getsourceUrl, callBackDict) == False:
         return callBackDict
+    # 跳转的URL
+    url = getsourceUrl
+    # 同步发送网络请求
+    res = urllib2.urlopen(url, timeout=5)
+    page_source = res.read().decode('utf-8')
+    Url = None
+    try:
+        decode_json = json.loads(page_source)
+        mySkipUrl = decode_json['Url']
+    except:
+        return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常")
     try:
         getcreateTime = int(time.time() * 1000)
-        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier, skipUrl=getskipUrl,createTime=getcreateTime)
+        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,sourceUrl= getsourceUrl, skipUrl=mySkipUrl,createTime=getcreateTime)
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "创建成功")
     except BaseException as e:
@@ -177,16 +188,24 @@ def openAndCloseProject(request):
         Comm.callBackFail(callBackDict, 0, "项目的开关只能是0或1")
         return callBackDict
     try:
+        showWeb = '0'
         projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
         if len(projectInfoObjLsit) == 0:
             Comm.callBackFail(callBackDict, 0, "项目不存在")
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
+            # 调用接口访问一下数据，调用接口访问一下数据
+            res = urllib2.urlopen(projectInfoObjLsit[0].sourceUrl, timeout=5)
+            page_source = res.read().decode('utf-8')
+            try:
+                decode_json = json.loads(page_source)
+                showWeb = decode_json['showWeb']
+            except:
+                return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常，无法获取开关的状态")
         try:
-            projectInfoObjLsit[0].isOpen = int(getisOpen)
+            projectInfoObjLsit[0].isOpen = int(showWeb)
             projectInfoObjLsit[0].save()
-            logger = logging.getLogger("django")
             Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
         except BaseException as e:
             Comm.callBackSuccess(callBackDict, 0, "更改状态失败")
@@ -266,7 +285,7 @@ def allProjectInfoList(request):
     pageData = []
     projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
-        pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
+        pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"sourceUrl":oneprojectInfo.sourceUrl,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 

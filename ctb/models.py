@@ -185,6 +185,7 @@ class otherProjectInfo(models.Model):
     # APP的签名信息
     bundleIdentifier = models.CharField(max_length = 255,db_index=True,unique=True)
     skipUrl = models.CharField(max_length=1024)
+    sourceUrl = models.CharField(max_length=1024)
     createTime = models.BigIntegerField(default=0)
     # 默认是0关闭状态，1是打开状态
     isOpen = models.IntegerField(default=0)
