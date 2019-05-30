@@ -155,7 +155,7 @@ def createProjectInfo(request):
     # 跳转的URL
     try:
         getcreateTime = int(time.time() * 1000)
-        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,sourceUrl= getsourceUrl, skipUrl=getsourceUrl,createTime=getcreateTime)
+        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,skipUrl=getsourceUrl,createTime=getcreateTime)
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "创建成功")
     except BaseException as e:
@@ -267,7 +267,7 @@ def allProjectInfoList(request):
     pageData = []
     projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
-        pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"sourceUrl":oneprojectInfo.sourceUrl,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
+        pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 
