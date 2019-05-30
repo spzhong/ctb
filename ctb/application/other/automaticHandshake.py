@@ -153,23 +153,9 @@ def createProjectInfo(request):
     if Comm.tryTranslateNull("跳转的URL为空", getsourceUrl, callBackDict) == False:
         return callBackDict
     # 跳转的URL
-    url = getsourceUrl
-    # 同步发送网络请求
-    Url = None
-    try:
-        res = urllib2.urlopen(url, timeout=5)
-        page_source = res.read().decode('utf-8')
-        decode_json = json.loads(page_source)
-        logger = logging.getLogger("django")
-        logger.info(str(decode_json))
-        mySkipUrl = decode_json['Url']
-    except BaseException as e:
-        logger = logging.getLogger("django")
-        logger.info(str(e))
-        return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常")
     try:
         getcreateTime = int(time.time() * 1000)
-        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,sourceUrl= getsourceUrl, skipUrl=mySkipUrl,createTime=getcreateTime)
+        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,sourceUrl= getsourceUrl, skipUrl=getsourceUrl,createTime=getcreateTime)
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "创建成功")
     except BaseException as e:
@@ -192,26 +178,16 @@ def openAndCloseProject(request):
         Comm.callBackFail(callBackDict, 0, "项目的开关只能是0或1")
         return callBackDict
     try:
-        showWeb = '0'
         projectInfoObjLsit = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
         if len(projectInfoObjLsit) == 0:
             Comm.callBackFail(callBackDict, 0, "项目不存在")
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
-            # 调用接口访问一下数据，调用接口访问一下数据
-            try:
-                res = urllib2.urlopen(projectInfoObjLsit[0].sourceUrl, timeout=5)
-                page_source = res.read().decode('utf-8')
-                decode_json = json.loads(page_source)
-                showWeb = decode_json['showWeb']
-            except BaseException as e:
-                logger = logging.getLogger("django")
-                logger.info(str(e))
-                return Comm.callBackFail(callBackDict, 0, "获取外部项目接口异常，无法获取开关的状态")
         try:
-            projectInfoObjLsit[0].isOpen = int(showWeb)
+            projectInfoObjLsit[0].isOpen = int(getisOpen)
             projectInfoObjLsit[0].save()
+            logger = logging.getLogger("django")
             Comm.callBackSuccess(callBackDict, 1, "更改状态已成功")
         except BaseException as e:
             Comm.callBackSuccess(callBackDict, 0, "更改状态失败")
