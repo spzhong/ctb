@@ -51,7 +51,9 @@ def appAutoHandshake(request):
             return Comm.callBackSuccess(callBackDict, 100, {"auroraTag": "default",
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 如果是关闭的状态
-        if projectInfoObj.isOpen == 0 and projectInfoObj.manualreleaseTime > 0 :
+        logger = logging.getLogger("django")
+        logger.info("projectInfoObj.manualreleaseTime:" + str(projectInfoObj.manualreleaseTime))
+        if projectInfoObj.isOpen == 0 :
             # 如果是关闭的状态
             try:
                 url = projectInfoObj.skipUrl
