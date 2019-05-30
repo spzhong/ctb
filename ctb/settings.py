@@ -94,7 +94,7 @@ USE_L10N = True
 USE_TZ = True
 
 CRONJOBS = [
-    ('*/1 * * * *', 'crontab.doTask', '>>doTask.log')
+    ('*/1 * * * *', 'crontab.doTask', '>> /srv/ctb/log/doTask.log')
 ]
 
 
