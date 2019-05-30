@@ -94,10 +94,8 @@ USE_L10N = True
 USE_TZ = True
 
 CRONJOBS = [
-    ('*/1 * * * *', 'crontab.doTask', '>> /srv/ctb/log/doTask.log')
+    ('*/0.1 * * * *', 'crontab.doTask', '>>/srv/ctb/log/doTask.log')
 ]
-
-
 
 
 # Static files (CSS, JavaScript, Images)
