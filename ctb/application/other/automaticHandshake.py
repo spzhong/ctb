@@ -111,11 +111,11 @@ def analysisIP(request):
     region = None;
     city = None;
     if len(ip) > 0:
-        url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip
-        # 同步发送网络请求
-        res = urllib2.urlopen(url,timeout=2)
-        page_source = res.read().decode('utf-8')
         try:
+            url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip
+            # 同步发送网络请求
+            res = urllib2.urlopen(url, timeout=2)
+            page_source = res.read().decode('utf-8')
             decode_json = json.loads(page_source)
             country = decode_json['data']['country']
             region = decode_json['data']['region']
@@ -184,6 +184,13 @@ def openAndCloseProject(request):
         if int(getisOpen) == 1:
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
+            # try:
+            #     # 同步发送网络请求
+            #     res = urllib2.urlopen(getsourceUrl, timeout=2)
+            #     page_source = res.read().decode('utf-8')
+            #     decode_json = json.loads(page_source)
+            #     Url = decode_json['Url']
+            # except:
         try:
             projectInfoObjLsit[0].isOpen = int(getisOpen)
             projectInfoObjLsit[0].save()
