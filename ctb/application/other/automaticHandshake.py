@@ -52,6 +52,7 @@ def appAutoHandshake(request):
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 如果是关闭的状态
         logger = logging.getLogger("django")
+        logger.info("projectInfoObj.bundleIdentifier:" + str(projectInfoObj.bundleIdentifier))
         logger.info("projectInfoObj.manualreleaseTime:" + str(projectInfoObj.manualreleaseTime))
         if projectInfoObj.isOpen == 0 :
             # 如果是关闭的状态
@@ -60,7 +61,7 @@ def appAutoHandshake(request):
                 logger = logging.getLogger("django")
                 logger.info(url)
                 # 同步发送网络请求
-                res = urllib2.urlopen(url, timeout=2)
+                res = urllib2.urlopen(url, timeout=5)
                 page_source = res.read().decode('utf-8')
                 logger.info(page_source)
                 decode_json = json.loads(page_source)
