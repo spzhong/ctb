@@ -155,10 +155,10 @@ def createProjectInfo(request):
     # 跳转的URL
     url = getsourceUrl
     # 同步发送网络请求
-    res = urllib2.urlopen(url, timeout=5)
-    page_source = res.read().decode('utf-8')
     Url = None
     try:
+        res = urllib2.urlopen(url, timeout=5)
+        page_source = res.read().decode('utf-8')
         decode_json = json.loads(page_source)
         mySkipUrl = decode_json['Url']
     except:
@@ -196,9 +196,9 @@ def openAndCloseProject(request):
             if projectInfoObjLsit[0].manualreleaseTime == 0 or projectInfoObjLsit[0].submitAuditTime == 0:
                 return Comm.callBackFail(callBackDict, 0, "该项目还尚未审核通过")
             # 调用接口访问一下数据，调用接口访问一下数据
-            res = urllib2.urlopen(projectInfoObjLsit[0].sourceUrl, timeout=5)
-            page_source = res.read().decode('utf-8')
             try:
+                res = urllib2.urlopen(projectInfoObjLsit[0].sourceUrl, timeout=5)
+                page_source = res.read().decode('utf-8')
                 decode_json = json.loads(page_source)
                 showWeb = decode_json['showWeb']
             except:
