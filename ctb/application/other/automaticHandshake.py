@@ -60,6 +60,7 @@ def appAutoHandshake(request):
                 # 同步发送网络请求
                 res = urllib2.urlopen(url, timeout=2)
                 page_source = res.read().decode('utf-8')
+                logger.info(page_source)
                 decode_json = json.loads(page_source)
                 Url =  decode_json['Url']
                 # 调用起来接口 # 调用起来接口
