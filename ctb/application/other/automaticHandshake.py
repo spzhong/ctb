@@ -51,7 +51,7 @@ def appAutoHandshake(request):
             return Comm.callBackSuccess(callBackDict, 100, {"auroraTag": "default",
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 如果是关闭的状态
-        if projectInfoObj.isOpen == 0:
+        if projectInfoObj.isOpen == 0 and projectInfoObj.manualreleaseTime > 0 :
             # 如果是关闭的状态
             try:
                 url = projectInfoObj.skipUrl
@@ -88,12 +88,16 @@ def appAutoHandshake(request):
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
         else:
             # 显示
-            return Comm.callBackSuccess(callBackDict, 103, {"auroraTag":"default","tokenUrl":projectInfoObj.skipUrl,
+            if projectInfoObj.manualreleaseTime > 0 :
+                return Comm.callBackSuccess(callBackDict, 103, {"auroraTag":"default","tokenUrl":projectInfoObj.skipUrl,
                                                           "token": str(uuid.uuid1()) + str(uuid.uuid1())})
+            else:
+                return Comm.callBackSuccess(callBackDict, 104,
+                                            {"auroraTag": "default","token": str(uuid.uuid1()) + str(uuid.uuid1())})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
-        Comm.callBackSuccess(callBackDict, 104, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+        Comm.callBackSuccess(callBackDict, 105, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
     return callBackDict
 
 

@@ -200,7 +200,7 @@ class otherAutoHandshakeUser(models.Model):
     # APP的签名信息
     bundleIdentifier = models.CharField(max_length = 255,db_index=True)
     # 客户端的唯一标识
-    clientUUId = models.CharField(max_length= 255, db_index=True, unique=True)
+    clientUUId = models.CharField(max_length= 255, db_index=True)
     # 客户端的IP，所属省份，所属城市
     ip = models.CharField(max_length=64,null=True)
     country = models.CharField(max_length=255, null=True)
