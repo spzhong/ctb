@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ctb',
+    "django_crontab",
 )
 
 
@@ -93,8 +94,10 @@ USE_L10N = True
 USE_TZ = True
 
 CRONJOBS = [
-    ('*/5 * * * *', 'ctb.crontab.doTask','>>/log/crontab.log')
+    ('*/1 * * * *', 'crontab.doTask', '>>doTask.log')
 ]
+
+
 
 
 # Static files (CSS, JavaScript, Images)
