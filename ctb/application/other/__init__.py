@@ -18,7 +18,7 @@ def index(request,route):
     elif route == 'createProjectInfo':
         callBackDict = automaticHandshake.createProjectInfo(request)
     elif route == 'appAutoHandshakenNew':
-        callBackDict = automaticHandshake.createProjectInfo(request)
+        callBackDict = automaticHandshake.appAutoHandshakenNew(request)
     elif route == 'openAndCloseProject':
         callBackDict = automaticHandshake.openAndCloseProject(request)
     elif route == 'submitAuditProject':
