@@ -101,11 +101,13 @@ def appAutoHandshake(request):
     return callBackDict
 
 
-def createAndSelecteUser(getbundleIdentifier,getclientUUId,getauroraTag,getisBlacklistUser,dictIP):
+
+def createAndSelecteUser(getbundleIdentifier,getclientUUId,getisBlacklistUser,dictIP):
+    # 创建一条新的记录
     getcreateTime = int(time.time() * 1000)
     autoHandshakeUserObj = None
     try:
-        autoHandshakeUserObj = otherAutoHandshakeUser.objects.create(isBlacklistUser=getisBlacklistUser,bundleIdentifier=getbundleIdentifier, clientUUId=getclientUUId,auroraTag=getauroraTag,loginTime=getcreateTime)
+        autoHandshakeUserObj = otherAutoHandshakeUser.objects.create(isBlacklistUser=getisBlacklistUser,bundleIdentifier=getbundleIdentifier, clientUUId=getclientUUId,loginTime=getcreateTime)
         if dictIP['ip']:
             autoHandshakeUserObj.ip = dictIP['ip']
         if dictIP['country']:
@@ -313,3 +315,36 @@ def allAutoHandshakeUser(request):
 
 
 
+
+def appAutoHandshakenNew(request):
+    callBackDict = {}
+    # 首先的判断当前项目的情况
+    getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
+    getclientUUId = Comm.tryTranslate(request, "clientUUI")
+    if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull("客户端的标识为空", getclientUUId, callBackDict) == False:
+        return callBackDict
+    # 查询具体的项目信息
+    try:
+        projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
+        # 分析IP
+        dictIP = analysisIP(request)
+        # 创建一条用户信息
+        createAndSelecteUser(getbundleIdentifier, getclientUUId, 0, dictIP)
+        lastProvince = 'default'
+        regionCoefficientList = otherRegionCoefficient.objects.all()
+        # 按照省份进行判断
+        for regionCoefficientoneObj in regionCoefficientList:
+            if dictIP["province"] and regionCoefficientoneObj.province == dictIP["province"]:
+                lastCoefficient = regionCoefficientoneObj.coefficient
+                lastProvince = dictIP["province"]
+                break
+        if lastCoefficient > 0:
+            return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": lastProvince})
+        return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,"tokenURP":projectInfoObj.skipUrl})
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackSuccess(callBackDict, 105, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+    return callBackDict
