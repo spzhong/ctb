@@ -251,8 +251,8 @@ def manualreleaseProject(request):
     if len(projectInfoObjLsit) == 0:
         Comm.callBackFail(callBackDict, 0, "项目不存在")
     try:
-        if projectInfoObjLsit[0].submitAuditTime == 0:
-            return Comm.callBackFail(callBackDict, 0, "项目还尚未提交审核呢")
+        # if projectInfoObjLsit[0].submitAuditTime == 0:
+        #     return Comm.callBackFail(callBackDict, 0, "项目还尚未提交审核呢")
         projectInfoObjLsit[0].manualreleaseTime = int(time.time() * 1000)
         projectInfoObjLsit[0].save()
         Comm.callBackSuccess(callBackDict, 1, "appstore已确认审核通过了")
@@ -330,19 +330,27 @@ def appAutoHandshakenNew(request):
         projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
         # 分析IP
         dictIP = analysisIP(request)
-        # 创建一条用户信息
-        createAndSelecteUser(getbundleIdentifier, getclientUUId, 0, dictIP)
-        lastProvince = 'default'
-        regionCoefficientList = otherRegionCoefficient.objects.all()
-        # 按照省份进行判断
-        for regionCoefficientoneObj in regionCoefficientList:
-            if dictIP["province"] and regionCoefficientoneObj.province == dictIP["province"]:
-                lastCoefficient = regionCoefficientoneObj.coefficient
-                lastProvince = dictIP["province"]
-                break
-        if lastCoefficient > 0:
-            return Comm.callBackSuccess(callBackDict, 102, {"auroraTag": lastProvince})
-        return Comm.callBackSuccess(callBackDict, 1, {"auroraTag": lastProvince,"tokenURP":projectInfoObj.skipUrl})
+        # 判断提交审核的时间--判断发布通过的时间(审核中的)
+        if projectInfoObj.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
+            getisBlacklistUser = 1
+            # 创建一条用户信息
+            createAndSelecteUser(getbundleIdentifier, getclientUUId, getisBlacklistUser, dictIP)
+            return Comm.callBackSuccess(callBackDict, 101, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+        # 判断用户所属的省份
+        if dictIP['province'] == None or dictIP['province'] == "XX" :
+            return Comm.callBackSuccess(callBackDict, 1,
+                                        {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
+                                         "tokenURP": projectInfoObj.skipUrl})
+        else:
+            try:
+                otherAutoHandshakeUser.object.filter(province=dictIP['province'])[0]
+                return Comm.callBackSuccess(callBackDict, 102, {"auroraTag":dictIP['province'],"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+            except BaseException as e:
+                logger = logging.getLogger("django")
+                logger.info(str(e))
+        return Comm.callBackSuccess(callBackDict, 1,
+                                    {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
+                                     "tokenURP": projectInfoObj.skipUrl})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
