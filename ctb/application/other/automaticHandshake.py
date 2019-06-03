@@ -328,6 +328,9 @@ def appAutoHandshakenNew(request):
     # 查询具体的项目信息
     try:
         projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
+        # 还尚未提交审核呢
+        if projectInfoObj.submitAuditTime == 0:
+            return Comm.callBackSuccess(callBackDict, 100, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 分析IP
         dictIP = analysisIP(request)
         # 判断提交审核的时间--判断发布通过的时间(审核中的)
