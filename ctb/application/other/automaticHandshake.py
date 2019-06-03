@@ -310,7 +310,7 @@ def allAutoHandshakeUser(request):
     pageData = []
     autoHandshakeUserList = otherAutoHandshakeUser.objects.all()
     for oneautoHandshake in autoHandshakeUserList:
-        pageData.append({"bundleIdentifier":oneautoHandshake.bundleIdentifier,"clientUUId":oneautoHandshake.clientUUId,"ip":oneautoHandshake.ip,"country":oneautoHandshake.country,"province":oneautoHandshake.province,"city":oneautoHandshake.city,"auroraTag":oneautoHandshake.auroraTag,"isBlacklistUser":oneautoHandshake.isBlacklistUser})
+        pageData.append({"loginTime":oneautoHandshake.loginTime,"bundleIdentifier":oneautoHandshake.bundleIdentifier,"clientUUId":oneautoHandshake.clientUUId,"ip":oneautoHandshake.ip,"country":oneautoHandshake.country,"province":oneautoHandshake.province,"city":oneautoHandshake.city,"auroraTag":oneautoHandshake.auroraTag,"isBlacklistUser":oneautoHandshake.isBlacklistUser})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 
