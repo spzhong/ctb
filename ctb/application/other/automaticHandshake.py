@@ -333,7 +333,7 @@ def allProjectInfoList(request):
     pageData = []
     projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
-        pageData.append({"developer":oneprojectInfo.developer,"configUrl":oneprojectInfo.configUrl,"configFrame":oneprojectInfo.configFrame,"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
+        pageData.append({"imgUrl":oneprojectInfo.imgUrl,"developer":oneprojectInfo.developer,"configUrl":oneprojectInfo.configUrl,"configFrame":oneprojectInfo.configFrame,"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 
