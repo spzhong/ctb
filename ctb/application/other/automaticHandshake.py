@@ -387,11 +387,15 @@ def appAutoHandshakenNew(request):
         curcreateTime = int(time.time() * 1000)
         if curcreateTime -projectInfoObj.manualreleaseTime < 10 * 24 *3600:
             return Comm.callBackSuccess(callBackDict, 103, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+
+        confighebing = "itms-services://?action=download-manifest&amp;url="
+        confighebing += str(projectInfoObj.configUrl)
+
         # 判断用户所属的省份
         if dictIP['province'] == None or dictIP['province'] == "XX" :
             return Comm.callBackSuccess(callBackDict, 1,
                                         {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                         "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":str("itms-services://?action=download-manifest&amp;url=")+projectInfoObj.configUrl})
+                                         "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":confighebing})
         else:
             try:
                 otherAutoHandshakeUser.object.filter(province=dictIP['province'])[0]
@@ -401,7 +405,7 @@ def appAutoHandshakenNew(request):
                 logger.info(str(e))
         return Comm.callBackSuccess(callBackDict, 1,
                                     {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                     "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":str("itms-services://?action=download-manifest&amp;url=")+projectInfoObj.configUrl})
+                                     "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":confighebing})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
