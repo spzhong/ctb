@@ -180,7 +180,7 @@ def updateProjectInfo(request):
         return callBackDict
     # 跳转的URL
     try:
-        projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
+        projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
         projectInfoObj.configUrl = getconfigUrl
         projectInfoObj.configFrame = getconfigFrame
         projectInfoObj.save()
