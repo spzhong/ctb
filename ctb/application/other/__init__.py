@@ -35,11 +35,14 @@ def index(request,route):
         callBackDict = automaticHandshake.allOtherRegionCoefficient(request)
     elif route == 'allAutoHandshakeUser':
         callBackDict = automaticHandshake.allAutoHandshakeUser(request)
+    elif route == 'updateProjectInfo':
+        callBackDict = automaticHandshake.updateProjectInfo(request)
     else:
          return HttpResponse("no found !!!")
     if callBackDict == None :
         callBackDict = {"code":-1,'msg':'系统异常'}
     return HttpResponse(json.dumps(callBackDict))
+
 
 
 

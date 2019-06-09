@@ -167,18 +167,50 @@ def get_client_ip(request):
 
 
 
+def updateProjectInfo(request):
+    callBackDict = {}
+    getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
+    getconfigUrl = Comm.tryTranslate(request, "configUrl")
+    getconfigFrame = Comm.tryTranslate(request, "configFrame")
+    if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull("配置的URL为空", getconfigUrl, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull("点击事件的frame为空", getconfigFrame, callBackDict) == False:
+        return callBackDict
+    # 跳转的URL
+    try:
+        projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)
+        projectInfoObj.configUrl = getconfigUrl
+        projectInfoObj.configFrame = getconfigFrame
+        projectInfoObj.save()
+        Comm.callBackSuccess(callBackDict, 1, "更新成功")
+    except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
+        Comm.callBackFail(callBackDict, 0, "系统异常")
+    return callBackDict
+
+
+
+
+
+
 def createProjectInfo(request):
     callBackDict = {}
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
     getsourceUrl = Comm.tryTranslate(request, "sourceUrl")
+    getdeveloper = Comm.tryTranslate(request, "developer")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
     if Comm.tryTranslateNull("跳转的URL为空", getsourceUrl, callBackDict) == False:
         return callBackDict
+    if Comm.tryTranslateNull("开发人空", getdeveloper, callBackDict) == False:
+        return callBackDict
     # 跳转的URL
     try:
         getcreateTime = int(time.time() * 1000)
-        projectInfoObj = otherProjectInfo.objects.create(bundleIdentifier=getbundleIdentifier,skipUrl=getsourceUrl,createTime=getcreateTime)
+        projectInfoObj = otherProjectInfo.objects.create(developer=getdeveloper,bundleIdentifier=getbundleIdentifier,skipUrl=getsourceUrl,createTime=getcreateTime)
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "创建成功")
     except BaseException as e:
@@ -285,13 +317,20 @@ def delAll(request):
     return callBackDict
 
 
+#
+# developer = models.CharField(max_length=100,null=True)
+#     # 配置的图片URL
+#     configUrl = models.CharField(max_length=1024,null=True)
+#     # 配置的Action Frame
+#     configFrame = models.CharField(max_length=512,null=True)
+#
 
 def allProjectInfoList(request):
     callBackDict = {}
     pageData = []
     projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
-        pageData.append({"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
+        pageData.append({"developer":oneprojectInfo.developer,"configUrl":oneprojectInfo.configUrl,"configFrame":oneprojectInfo.configFrame,"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 

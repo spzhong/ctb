@@ -194,6 +194,12 @@ class otherProjectInfo(models.Model):
     submitAuditTime = models.BigIntegerField(default=0)
     # 手动发布的时间
     manualreleaseTime = models.BigIntegerField(default=0)
+    # 开发人
+    developer = models.CharField(max_length=100,null=True)
+    # 配置的图片URL
+    configUrl = models.CharField(max_length=1024,null=True)
+    # 配置的Action Frame
+    configFrame = models.CharField(max_length=512,null=True)
 
 # 握手用户的信息
 class otherAutoHandshakeUser(models.Model):
