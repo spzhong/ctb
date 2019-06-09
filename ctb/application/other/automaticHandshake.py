@@ -172,6 +172,8 @@ def updateProjectInfo(request):
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
     getconfigUrl = Comm.tryTranslate(request, "configUrl")
     getconfigFrame = Comm.tryTranslate(request, "configFrame")
+    getimgUrl = Comm.tryTranslate(request, "imgUrl")
+
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
     if Comm.tryTranslateNull("配置的URL为空", getconfigUrl, callBackDict) == False:
@@ -183,6 +185,7 @@ def updateProjectInfo(request):
         projectInfoObj = otherProjectInfo.objects.filter(bundleIdentifier=getbundleIdentifier)[0]
         projectInfoObj.configUrl = getconfigUrl
         projectInfoObj.configFrame = getconfigFrame
+        projectInfoObj.imgUrl = getimgUrl
         projectInfoObj.save()
         Comm.callBackSuccess(callBackDict, 1, "更新成功")
     except BaseException as e:
