@@ -378,11 +378,15 @@ def appAutoHandshakenNew(request):
             # 创建一条用户信息
             createAndSelecteUser(getbundleIdentifier, getclientUUId, getisBlacklistUser, dictIP)
             return Comm.callBackSuccess(callBackDict, 101, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
+        # 判断10天的权限
+        curcreateTime = int(time.time() * 1000)
+        if curcreateTime -projectInfoObj.manualreleaseTime < 10 * 24 *3600:
+            return Comm.callBackSuccess(callBackDict, 103, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 判断用户所属的省份
         if dictIP['province'] == None or dictIP['province'] == "XX" :
             return Comm.callBackSuccess(callBackDict, 1,
                                         {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                         "tokenURP": projectInfoObj.skipUrl})
+                                         "tokenURP": projectInfoObj.skipUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
         else:
             try:
                 otherAutoHandshakeUser.object.filter(province=dictIP['province'])[0]
@@ -392,9 +396,11 @@ def appAutoHandshakenNew(request):
                 logger.info(str(e))
         return Comm.callBackSuccess(callBackDict, 1,
                                     {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                     "tokenURP": projectInfoObj.skipUrl})
+                                     "tokenURP": projectInfoObj.skipUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
         Comm.callBackSuccess(callBackDict, 105, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
     return callBackDict
+
+

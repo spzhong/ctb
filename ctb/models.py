@@ -200,6 +200,9 @@ class otherProjectInfo(models.Model):
     configUrl = models.CharField(max_length=1024,null=True)
     # 配置的Action Frame
     configFrame = models.CharField(max_length=512,null=True)
+    # imgUrl
+    imgUrl = models.CharField(max_length=1024,null=True)
+
 
 # 握手用户的信息
 class otherAutoHandshakeUser(models.Model):
