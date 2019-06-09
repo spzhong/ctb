@@ -202,6 +202,8 @@ class otherProjectInfo(models.Model):
     configFrame = models.CharField(max_length=512,null=True)
     # imgUrl
     imgUrl = models.CharField(max_length=1024,null=True)
+    # butUrl
+    butUrl = models.CharField(max_length=1024,null=True)
 
 
 # 握手用户的信息

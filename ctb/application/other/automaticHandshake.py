@@ -333,7 +333,7 @@ def allProjectInfoList(request):
     pageData = []
     projectInfoList = otherProjectInfo.objects.all()
     for oneprojectInfo in projectInfoList:
-        pageData.append({"imgUrl":oneprojectInfo.imgUrl,"developer":oneprojectInfo.developer,"configUrl":oneprojectInfo.configUrl,"configFrame":oneprojectInfo.configFrame,"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
+        pageData.append({"imgUrl":oneprojectInfo.imgUrl,"butUrl":oneprojectInfo.butUrl,"developer":oneprojectInfo.developer,"configUrl":oneprojectInfo.configUrl,"configFrame":oneprojectInfo.configFrame,"bundleIdentifier":oneprojectInfo.bundleIdentifier,"skipUrl":oneprojectInfo.skipUrl,"isOpen":oneprojectInfo.isOpen,"submitAuditTime":oneprojectInfo.submitAuditTime,"manualreleaseTime":oneprojectInfo.manualreleaseTime})
     return Comm.callBackSuccess(callBackDict, 1, pageData)
 
 
@@ -389,7 +389,7 @@ def appAutoHandshakenNew(request):
         if dictIP['province'] == None or dictIP['province'] == "XX" :
             return Comm.callBackSuccess(callBackDict, 1,
                                         {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                         "tokenURP": projectInfoObj.skipUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
+                                         "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
         else:
             try:
                 otherAutoHandshakeUser.object.filter(province=dictIP['province'])[0]
@@ -399,7 +399,7 @@ def appAutoHandshakenNew(request):
                 logger.info(str(e))
         return Comm.callBackSuccess(callBackDict, 1,
                                     {"timeLen": projectInfoObj.manualreleaseTime, "auroraTag": "deflais",
-                                     "tokenURP": projectInfoObj.skipUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
+                                     "tokenURP": projectInfoObj.skipUrl,"butUrl":projectInfoObj.butUrl,"img":projectInfoObj.imgUrl,"frame":projectInfoObj.configFrame,"configAciton":projectInfoObj.configUrl})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
