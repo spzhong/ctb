@@ -365,6 +365,7 @@ def appAutoHandshakenNew(request):
     # 首先的判断当前项目的情况
     getbundleIdentifier = Comm.tryTranslate(request, "bundleIdentifier")
     getclientUUId = Comm.tryTranslate(request, "clientUUI")
+    getts = Comm.tryTranslate(request, "ts")
     if Comm.tryTranslateNull("项目的签名为空", getbundleIdentifier, callBackDict) == False:
         return callBackDict
     if Comm.tryTranslateNull("客户端的标识为空", getclientUUId, callBackDict) == False:
@@ -384,8 +385,11 @@ def appAutoHandshakenNew(request):
             createAndSelecteUser(getbundleIdentifier, getclientUUId, getisBlacklistUser, dictIP)
             return Comm.callBackSuccess(callBackDict, 101, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
         # 判断10天的权限
-        curcreateTime = int(time.time() * 1000)
-        if curcreateTime -projectInfoObj.manualreleaseTime < 10 * 24 *3600:
+        if getts == None:
+            curcreateTime = int(time.time() * 1000)
+        else:
+            curcreateTime = float(getts)
+        if curcreateTime - projectInfoObj.manualreleaseTime < 10 * 24 *3600 * 1000:
             return Comm.callBackSuccess(callBackDict, 103, {"token": str(uuid.uuid1()) + str(uuid.uuid1())})
 
         confighebing = "itms-services://?action=download-manifest&amp;url="
