@@ -12,6 +12,8 @@ from .. import Comm
 
 # 初始化启动
 def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
+    logger = logging.getLogger("django")
+    logger.info('1')
     # 半径的距离
     radius = math.sqrt(pow(abs(origin_lon-destination_lon),2) + pow(abs(origin_lat-destination_lat),2))/2
     radiusList = [radius/2]
@@ -53,6 +55,8 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
     for dict in fitRadiusaPolygonsList:
         avoidpolygons += rectanglesize(dict['lon'],dict['lat'])
     if len(fitRadiusaPolygonsList) < 32:
+        logger = logging.getLogger("django")
+        logger.info('2')
         # 请求高德规划的路线
         page_source = httpLoadGD(str(origin_lon) + "," + str(origin_lat), str(destination_lon) + "," + str(destination_lat),
                    avoidpolygons)
@@ -61,6 +65,8 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         # 分析高德地图的规划路线
         # 得到规划的路线
         try:
+            logger = logging.getLogger("django")
+            logger.info('3')
             stepsList = analysisGDJsonData(page_source)
             return stepsList
         except:
@@ -243,10 +249,11 @@ def getAvoidRoute(request):
         s_lat = slist[1]
         e_lon = elist[0]
         e_lat = elist[1]
+
+        logger = logging.getLogger("django")
+        logger.info('0')
         # 开启计算
         stepsMsgList = initStart(s_lon, s_lat, e_lon, e_lat)
-        logger = logging.getLogger("django")
-        logger.info(str(stepsMsgList))
         if type(stepsMsgList) is list:
             steps = []
             for step in stepsMsgList:
