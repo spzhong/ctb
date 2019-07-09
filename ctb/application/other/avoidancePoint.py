@@ -216,6 +216,8 @@ def bdToGaoDe(lon, lat):
 # 注意，传入的经纬度是，是经度在前，维度在后
 # 另外，注意是float类型，小数点最后最多6位数
 def getAllAvoidancePoints():
+    logger = logging.getLogger("django")
+    logger.info('1_1')
     f = open("/index.json", "r")  # 打开文件
     fr = f.read()  # 读取文件
     try:
@@ -225,6 +227,7 @@ def getAllAvoidancePoints():
             list.append({"lon":float(dict['longitude']),"lat":float(dict['latitude'])})
         return list
     except BaseException as e:
+        logger.info('1_2' + str(e))
         return None
 
 
