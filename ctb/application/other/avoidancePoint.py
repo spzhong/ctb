@@ -242,7 +242,12 @@ def getAvoidRoute(request):
         return callBackDict
     if Comm.tryTranslateNull("结束经纬度为空", e_lonlat, callBackDict) == False:
         return callBackDict
+    logger = logging.getLogger("django")
+    logger.info('-2')
     try:
+        logger = logging.getLogger("django")
+        logger.info('-1')
+
         slist = s_lonlat.split(',')
         elist = e_lonlat.split(',')
         s_lon = slist[0]
