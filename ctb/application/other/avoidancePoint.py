@@ -217,14 +217,14 @@ def bdToGaoDe(lon, lat):
 # 另外，注意是float类型，小数点最后最多6位数
 def getAllAvoidancePoints():
     logger = logging.getLogger("django")
-    logger.info('1_1')
-    f = open("/index.json", "r")  # 打开文件
+    f = open("/srv/ctb/ctb/application/other/index.json", "r")  # 打开文件
     fr = f.read()  # 读取文件
     try:
         jsonData = eval(fr)
         list = []
         for dict in jsonData['RECORDS']:
             list.append({"lon":float(dict['longitude']),"lat":float(dict['latitude'])})
+        logger.info(str(list))
         return list
     except BaseException as e:
         logger.info('1_2' + str(e))
@@ -246,11 +246,7 @@ def getAvoidRoute(request):
     if Comm.tryTranslateNull("结束经纬度为空", e_lonlat, callBackDict) == False:
         return callBackDict
     logger = logging.getLogger("django")
-    logger.info('-2')
     try:
-        logger = logging.getLogger("django")
-        logger.info('-1')
-
         slist = s_lonlat.split(',')
         elist = e_lonlat.split(',')
         s_lon = slist[0]
