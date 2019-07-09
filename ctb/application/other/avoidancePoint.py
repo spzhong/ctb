@@ -62,7 +62,7 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         # 得到规划的路线
         try:
             stepsList = analysisGDJsonData(page_source)
-            return stepsList
+            return stepsList,len(fitRadiusaPolygonsList)
         except:
             return "解析避让道路异常"
     else:
@@ -239,7 +239,6 @@ def getAvoidRoute(request):
         return callBackDict
     if Comm.tryTranslateNull("结束经纬度为空", e_lonlat, callBackDict) == False:
         return callBackDict
-    logger = logging.getLogger("django")
     try:
         slist = s_lonlat.split(',')
         elist = e_lonlat.split(',')
@@ -251,7 +250,7 @@ def getAvoidRoute(request):
         stepsMsgList = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
         if type(stepsMsgList) is list:
             steps = []
-            for step in stepsMsgList:
+            for step in stepsMsgList[0]:
                 try:
                     polylineStr = step['polyline']
                     polyLineList = polylineStr.split(';')
@@ -259,7 +258,7 @@ def getAvoidRoute(request):
                                   "action": step['action'], "polyline":polyLineList[len(polyLineList) - 1]})
                 except:
                     continue
-            return Comm.callBackSuccess(callBackDict, 1, steps)
+            return Comm.callBackSuccess(callBackDict, 1, {"start":s_lonlat,"end":e_lonlat,"avoidAreasCount":str(stepsMsgList[1]),"list":steps})
         else:
             return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
