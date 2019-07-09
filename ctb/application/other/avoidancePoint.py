@@ -62,6 +62,8 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         # 得到规划的路线
         try:
             stepsList = analysisGDJsonData(page_source)
+            logger = logging.getLogger("django")
+            logger.info("url:" + str(len(fitRadiusaPolygonsList)))
             return [stepsList,len(fitRadiusaPolygonsList)]
         except:
             return "解析避让道路异常"
@@ -168,6 +170,8 @@ def httpLoadGD(origin,destination,avoidpolygons):
         url += "&ferry=1"       #不使用渡轮
         url += "&key=49521b5942bff4d41e5495698ab5bcb6"
         res = urllib2.urlopen(url, timeout=3)
+        logger = logging.getLogger("django")
+        logger.info("url:"+url)
         page_source = res.read().decode('utf-8')
         return page_source
     except:
