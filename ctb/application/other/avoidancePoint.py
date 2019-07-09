@@ -250,7 +250,16 @@ def getAvoidRoute(request):
         # 开启计算
         stepsMsgList = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
         if type(stepsMsgList) is list:
-            return Comm.callBackSuccess(callBackDict, 1, stepsMsgList)
+            steps = []
+            for step in stepsMsgList:
+                try:
+                    polylineStr = step['polyline']
+                    polyLineList = polylineStr.split(';')
+                    steps.append({"road": step['road'], "instruction": step['instruction'], "orientation": step['orientation'],
+                                  "action": step['action'], "polyline":polyLineList[len(polyLineList) - 1]})
+                except:
+                    continue
+            return Comm.callBackSuccess(callBackDict, 1, steps)
         else:
             return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
