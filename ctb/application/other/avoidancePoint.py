@@ -250,18 +250,7 @@ def getAvoidRoute(request):
         # 开启计算
         stepsMsgList = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
         if type(stepsMsgList) is list:
-            steps = []
-            for step in stepsMsgList:
-                logger = logging.getLogger("django")
-                logger.info(step)
-                try:
-                    polylineStr = step.polyline
-                    polyLineList = polylineStr.split(';')
-                    steps.append({"road": step.road, "instruction": step.instruction, "orientation": step.orientation,
-                                  "action": step.action, "polyline":polyLineList[len(polyLineList) - 1]})
-                except:
-                    continue
-            return Comm.callBackSuccess(callBackDict, 1, steps)
+            return Comm.callBackSuccess(callBackDict, 1, stepsMsgList)
         else:
             return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
