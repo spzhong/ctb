@@ -247,10 +247,10 @@ def getAvoidRoute(request):
         e_lon = elist[0]
         e_lat = elist[1]
         # 开启计算
-        stepsMsgList = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
-        if type(stepsMsgList) is list:
+        stepsMsgArray = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
+        if type(stepsMsgArray) is list:
             steps = []
-            for step in stepsMsgList[0]:
+            for step in stepsMsgArray[0]:
                 try:
                     polylineStr = step['polyline']
                     polyLineList = polylineStr.split(';')
@@ -258,9 +258,9 @@ def getAvoidRoute(request):
                                   "action": step['action'], "polyline":polyLineList[len(polyLineList) - 1]})
                 except:
                     continue
-            return Comm.callBackSuccess(callBackDict, 1, {"start":s_lonlat,"end":e_lonlat,"avoidAreasCount":str(stepsMsgList[1]),"list":steps})
+            return Comm.callBackSuccess(callBackDict, 1, {"start":s_lonlat,"end":e_lonlat,"avoidAreasCount":str(stepsMsgArray[1]),"list":steps})
         else:
-            return Comm.callBackFail(callBackDict, 0, stepsMsgList)
+            return Comm.callBackFail(callBackDict, 0, stepsMsgArray)
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
