@@ -6,6 +6,7 @@ import math
 import sys
 import urllib2
 import httplib
+import logging
 from .. import Comm
 
 
@@ -258,6 +259,8 @@ def getAvoidRoute(request):
         else:
             return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
+        logger = logging.getLogger("django")
+        logger.info(str(e))
         return Comm.callBackFail(callBackDict, 0, "输入的经纬度异常")
 
     # # 测试用
