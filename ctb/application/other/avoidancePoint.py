@@ -2,10 +2,11 @@
 import json
 import random
 import time
-import requests
 import math
 import sys
-
+import urllib2
+import httplib
+from .. import Comm
 
 
 # 初始化启动
@@ -26,6 +27,8 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
             position = '东南'
     # 搜索和筛选规避的点
     allAvoidanceList = getAllAvoidancePoints()
+    if allAvoidanceList == None:
+        return '获取配置避让点的文件为空'
     # 进行筛选 - 查找适合的半径距离
     fitRadiusaPolygonsList = None
     # 获得修正后的坐标
@@ -50,10 +53,20 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         avoidpolygons += rectanglesize(dict['lon'],dict['lat'])
     if len(fitRadiusaPolygonsList) < 32:
         # 请求高德规划的路线
-        httpLoadGD(str(origin_lon) + "," + str(origin_lat), str(destination_lon) + "," + str(destination_lat),
-                   avoidpolygons,len(fitRadiusaPolygonsList))
+        page_source = httpLoadGD(str(origin_lon) + "," + str(origin_lat), str(destination_lon) + "," + str(destination_lat),
+                   avoidpolygons)
+        if page_source == None:
+            return "高德API请求异常"
+        # 分析高德地图的规划路线
+        # 得到规划的路线
+        try:
+            stepsList = analysisGDJsonData(page_source)
+            return stepsList
+        except:
+            return "解析避让道路异常"
     else:
-        print('count > 32个避让点' + str(len(fitRadiusaPolygonsList)))
+        return "查询避让点:" + str(len(fitRadiusaPolygonsList)) + "个,超过了32个，没有高德API的请求"
+
 
 # 得到修正后的坐标
 def amendedLonLat(position,radiusOne,origin_lon,origin_lat,destination_lon,destination_lat):
@@ -128,9 +141,8 @@ def rectanglesize(lon,lat):
 
 
 
-
 # 请求高德规划的路线
-def httpLoadGD(origin,destination,avoidpolygons,fitRadiusaPolygonsList):
+def httpLoadGD(origin,destination,avoidpolygons):
     try:
         url = 'https://restapi.amap.com/v3/direction/driving?'
         url += "origin="
@@ -154,17 +166,15 @@ def httpLoadGD(origin,destination,avoidpolygons,fitRadiusaPolygonsList):
             url += "&avoidpolygons="+avoidpolygons[:-1]  #截取从头开始到倒数第一个字符之前
         url += "&ferry=1"       #不使用渡轮
         url += "&key=49521b5942bff4d41e5495698ab5bcb6"
-        print("url:"+url)
-        # 同步发送网络请求
-        httpText = requests.get(url).text
-        # 分析高德地图的规划路线
-        analysisGDJsonData(httpText,fitRadiusaPolygonsList)
+        res = urllib2.urlopen(url, timeout=3)
+        page_source = res.read().decode('utf-8')
+        return page_source
     except:
-        print('网络异常')
+        return None
 
 
 # 分析高德返回的数据
-def analysisGDJsonData(page_source,fitRadiusaPolygonsList):
+def analysisGDJsonData(page_source):
     try:
         jsonData = json.loads(page_source)
         pathsList = jsonData['route']['paths']
@@ -173,15 +183,15 @@ def analysisGDJsonData(page_source,fitRadiusaPolygonsList):
             steps = []
             for oneStep in path['steps']:
                 steps.append(oneStep)
-        if steps:
-            strTimes = ''
-            for stepOne in steps:
-                polyLineList = stepOne['polyline'].split(';')
-                strTimes += "new AMap.LngLat("+polyLineList[-1]+"),\n"
-                #print(polyLineList[-1])
-            print("关键坐标长度:"+str(len(steps)) + "\n避让点数：" + str(fitRadiusaPolygonsList) + "\n关键经纬度如下：\n"+strTimes)
+        return steps
+            # strTimes = ''
+            # for stepOne in steps:
+            #     polyLineList = stepOne['polyline'].split(';')
+            #     strTimes += "new AMap.LngLat("+polyLineList[-1]+"),\n"
+            #     #print(polyLineList[-1])
+            # print("关键坐标长度:"+str(len(steps)) + "\n避让点数：" + str(fitRadiusaPolygonsList) + "\n关键经纬度如下：\n"+strTimes)
     except BaseException as e:
-        print('解析数据异常')
+        return "解析数据异常"
 
 
 def bdToGaoDe(lon, lat):
@@ -199,7 +209,7 @@ def bdToGaoDe(lon, lat):
 # 注意，传入的经纬度是，是经度在前，维度在后
 # 另外，注意是float类型，小数点最后最多6位数
 def getAllAvoidancePoints():
-    f = open("/Users/spzhong/Desktop/index.json", "r")  # 打开文件
+    f = open("/index.json", "r")  # 打开文件
     fr = f.read()  # 读取文件
     try:
         jsonData = eval(fr)
@@ -208,42 +218,86 @@ def getAllAvoidancePoints():
             list.append({"lon":float(dict['longitude']),"lat":float(dict['latitude'])})
         return list
     except BaseException as e:
-        print(str(e))
-        pass
+        return None
 
 
-# 执行程序的入口
-def main(argv):
+
+# 获取避让的道路
+def getAvoidRoute(request):
+    callBackDict = {}
+    #首先的判断当前项目的情况
+    getbundleIdentifier = Comm.tryTranslate(request, "sessionId")
+    s_lonlat = Comm.tryTranslate(request, "s_lonlat")
+    e_lonlat = Comm.tryTranslate(request, "e_lonlat")
+    #if Comm.tryTranslateNull("sessionId 为空", getbundleIdentifier, callBackDict) == False:
+    #    return callBackDict
+    if Comm.tryTranslateNull("起点纬纬度为空", s_lonlat, callBackDict) == False:
+        return callBackDict
+    if Comm.tryTranslateNull("结束经纬度为空", e_lonlat, callBackDict) == False:
+        return callBackDict
     try:
-        slist = argv[1].split(',')
-        elist = argv[2].split(',')
-
+        slist = s_lonlat.split(',')
+        elist = e_lonlat.split(',')
         s_lon = slist[0]
         s_lat = slist[1]
-
         e_lon = elist[0]
         e_lat = elist[1]
-
-        print("\n起始经纬度：" + "new AMap.LngLat({0:.6f}".format(float(s_lon)) + "," + "{0:.6f}".format(float(s_lat)) + "),");
-        print("new AMap.LngLat({0:.6f}".format(float(e_lon))+","+"{0:.6f}".format(float(e_lat))+"),");
-        initStart(float(s_lon),float(s_lat),float(e_lon),float(e_lat))
-
-        #initStart(113.943511,22.549537, 113.880579,22.582984)
-        # # 随机经纬度
-        # for num in range(0,1):
-        #     s_lon = random.uniform(113.793640, 114.310684)
-        #     s_lat = random.uniform(22.592458, 22.715390)
-        #     e_lon = random.uniform(113.793640, 114.310684)
-        #     e_lat = random.uniform(22.592458, 22.715390)
-        #     print("\n起终点:\n"+"new AMap.LngLat({0:.6f}".format(s_lon)+","+"{0:.6f}".format(s_lat)+")",);
-        #     print("new AMap.LngLat({0:.6f}".format(e_lon)+","+"{0:.6f}".format(e_lat)+")");
-        #     initStart(s_lon,s_lat,e_lon,e_lat)
+        # 开启计算
+        stepsMsgList = initStart(s_lon, s_lat, e_lon, e_lat)
+        if type(stepsMsgList) is list:
+            steps = []
+            for step in stepsMsgList:
+                polylineStr =  step.polyline
+                try:
+                    polyLineList = polylineStr.split(';')
+                    steps.append({"road": step.road, "instruction": step.instruction, "orientation": step.orientation,
+                                  "action": step.action, "polyline":polyLineList[len(polyLineList) - 1]})
+                except:
+                    continue
+            return Comm.callBackFail(callBackDict, 1, steps)
+        else:
+            return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
-        print("传入起始经纬度异常:" + str(e))
-        exit(0)
+        return Comm.callBackFail(callBackDict, 0, "输入的经纬度异常")
 
-if __name__ == "__main__":
-    main(sys.argv)
+    # # 测试用
+    # testList = getAllAvoidancePoints()
+    # if testList == None:
+    #     return Comm.callBackFail(callBackDict, 0, "获取经纬度配置异常")
+
+
+# # 执行程序的入口
+# def main(argv):
+#     try:
+#         slist = argv[1].split(',')
+#         elist = argv[2].split(',')
+#
+#         s_lon = slist[0]
+#         s_lat = slist[1]
+#
+#         e_lon = elist[0]
+#         e_lat = elist[1]
+#
+#         print("\n起始经纬度：" + "new AMap.LngLat({0:.6f}".format(float(s_lon)) + "," + "{0:.6f}".format(float(s_lat)) + "),");
+#         print("new AMap.LngLat({0:.6f}".format(float(e_lon))+","+"{0:.6f}".format(float(e_lat))+"),");
+#         initStart(float(s_lon),float(s_lat),float(e_lon),float(e_lat))
+#
+#         #initStart(113.943511,22.549537, 113.880579,22.582984)
+#         # # 随机经纬度
+#         # for num in range(0,1):
+#         #     s_lon = random.uniform(113.793640, 114.310684)
+#         #     s_lat = random.uniform(22.592458, 22.715390)
+#         #     e_lon = random.uniform(113.793640, 114.310684)
+#         #     e_lat = random.uniform(22.592458, 22.715390)
+#         #     print("\n起终点:\n"+"new AMap.LngLat({0:.6f}".format(s_lon)+","+"{0:.6f}".format(s_lat)+")",);
+#         #     print("new AMap.LngLat({0:.6f}".format(e_lon)+","+"{0:.6f}".format(e_lat)+")");
+#         #     initStart(s_lon,s_lat,e_lon,e_lat)
+#     except BaseException as e:
+#         print("传入起始经纬度异常:" + str(e))
+#         exit(0)
+#
+# if __name__ == "__main__":
+#     main(sys.argv)
 
 
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import automaticHandshake
+import avoidancePoint
 
 
 from django.http import HttpResponse
@@ -37,6 +38,8 @@ def index(request,route):
         callBackDict = automaticHandshake.allAutoHandshakeUser(request)
     elif route == 'updateProjectInfo':
         callBackDict = automaticHandshake.updateProjectInfo(request)
+    elif route == 'getAvoidRoute':
+        callBackDict = avoidancePoint.getAvoidRoute(request)
     else:
          return HttpResponse("no found !!!")
     if callBackDict == None :
