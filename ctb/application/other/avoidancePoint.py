@@ -12,8 +12,6 @@ from .. import Comm
 
 # 初始化启动
 def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
-    logger = logging.getLogger("django")
-    logger.info('1')
     # 半径的距离
     radius = math.sqrt(pow(abs(origin_lon-destination_lon),2) + pow(abs(origin_lat-destination_lat),2))/2
     radiusList = [radius/2]
@@ -249,14 +247,13 @@ def getAvoidRoute(request):
         s_lat = slist[1]
         e_lon = elist[0]
         e_lat = elist[1]
-
-        logger = logging.getLogger("django")
-        logger.info('0')
         # 开启计算
         stepsMsgList = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
         if type(stepsMsgList) is list:
             steps = []
             for step in stepsMsgList:
+                logger = logging.getLogger("django")
+                logger.info(step)
                 try:
                     polylineStr = step.polyline
                     polyLineList = polylineStr.split(';')
@@ -264,7 +261,7 @@ def getAvoidRoute(request):
                                   "action": step.action, "polyline":polyLineList[len(polyLineList) - 1]})
                 except:
                     continue
-            return Comm.callBackFail(callBackDict, 1, steps)
+            return Comm.callBackSuccess(callBackDict, 1, steps)
         else:
             return Comm.callBackFail(callBackDict, 0, stepsMsgList)
     except BaseException as e:
