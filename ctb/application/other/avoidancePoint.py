@@ -62,7 +62,7 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         # 得到规划的路线
         try:
             stepsList = analysisGDJsonData(page_source)
-            return stepsList,len(fitRadiusaPolygonsList)
+            return [stepsList,len(fitRadiusaPolygonsList)]
         except:
             return "解析避让道路异常"
     else:
@@ -218,7 +218,6 @@ def getAllAvoidancePoints():
         list = []
         for dict in jsonData['RECORDS']:
             list.append({"lon":float(dict['longitude']),"lat":float(dict['latitude'])})
-        logger.info(str(list))
         return list
     except BaseException as e:
         logger.info('1_2' + str(e))
