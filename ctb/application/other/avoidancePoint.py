@@ -245,6 +245,8 @@ def getAvoidRoute(request):
         e_lat = elist[1]
         # 开启计算
         stepsMsgList = initStart(s_lon, s_lat, e_lon, e_lat)
+        logger = logging.getLogger("django")
+        logger.info(str(stepsMsgList))
         if type(stepsMsgList) is list:
             steps = []
             for step in stepsMsgList:
