@@ -55,8 +55,6 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
     for dict in fitRadiusaPolygonsList:
         avoidpolygons += rectanglesize(dict['lon'],dict['lat'])
     if len(fitRadiusaPolygonsList) < 32:
-        logger = logging.getLogger("django")
-        logger.info('2')
         # 请求高德规划的路线
         page_source = httpLoadGD(str(origin_lon) + "," + str(origin_lat), str(destination_lon) + "," + str(destination_lat),
                    avoidpolygons)
@@ -65,8 +63,6 @@ def initStart(origin_lon,origin_lat,destination_lon,destination_lat):
         # 分析高德地图的规划路线
         # 得到规划的路线
         try:
-            logger = logging.getLogger("django")
-            logger.info('3')
             stepsList = analysisGDJsonData(page_source)
             return stepsList
         except:
@@ -261,8 +257,8 @@ def getAvoidRoute(request):
         if type(stepsMsgList) is list:
             steps = []
             for step in stepsMsgList:
-                polylineStr =  step.polyline
                 try:
+                    polylineStr = step.polyline
                     polyLineList = polylineStr.split(';')
                     steps.append({"road": step.road, "instruction": step.instruction, "orientation": step.orientation,
                                   "action": step.action, "polyline":polyLineList[len(polyLineList) - 1]})
