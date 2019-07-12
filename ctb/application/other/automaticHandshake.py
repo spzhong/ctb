@@ -38,7 +38,7 @@ def appAutoHandshake(request):
         if projectInfoObj.submitAuditTime > 0 and projectInfoObj.manualreleaseTime == 0:
             getisBlacklistUser = 1
         # 创建一条用户的记录数据
-        createAndSelecteUser(getbundleIdentifier, getclientUUId, getauroraTag,getisBlacklistUser,dictIP)
+        createAndSelecteUser(getbundleIdentifier, getclientUUId,getisBlacklistUser,dictIP)
         # 关闭的状态
         # 审核中的状态,# 注意此时标记为黑名单
         if getisBlacklistUser == 1:
