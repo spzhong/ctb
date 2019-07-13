@@ -257,7 +257,7 @@ def getAvoidRoute(request):
                     polyLineList = polylineStr.split(';')
                     indexCount = 0
                     for poly in polyLineList:
-                        if indexCount % 5 == 0:
+                        if indexCount % 8 == 0:
                             steps.append(poly)
                         indexCount = indexCount + 1
                     #steps.append(polyLineList[len(polyLineList) - 1])
