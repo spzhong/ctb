@@ -7,7 +7,7 @@ from .application import task
 from .application import check
 from .application import stream
 from .application import other
-
+from .application import wdpvip
 
 urlpatterns = patterns('',
     # Examples:
@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^ctb/check/([a-z,A-Z]+)$', check.index),
     url(r'^ctb/stream/([a-z,A-Z]+)$', stream.index),
     url(r'^ctb/other/([a-z,A-Z]+)$', other.index),
-    url(r'^ctb/wdpzs/([a-z,A-Z]+)$', other.index),
+    url(r'^ctb/wdpvip/([a-z,A-Z]+)$', wdpvip.index),
 )
 
 

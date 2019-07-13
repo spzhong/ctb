@@ -74,27 +74,8 @@ DATABASES = {
                 'init_command': 'SET default_storage_engine=INNODB',
             },
         },
-    'dbwdpzs': {
-        'ENGINE':'django.db.backends.mysql',
-        'NAME':'wdpzs',
-        'USER':'ctb',
-        'PASSWORD':'ctb@123456',
-        'HOST':'10.66.145.129',
-        'PORT':'3306',
-        'SIZE': '10',  # Default '0' means unlimit connection pool size
-        'OPTIONS': {
-                'init_command': 'SET default_storage_engine=INNODB',
-            },
-    },
 }
 
-DATABASE_ROUTERS = ['ctb.database_router.DatabaseAppsRouter']
-DATABASE_APPS_MAPPING = {
-    # example:
-    #'app_name':'database_name',
-    'ctb': 'default',
-    'dbwdpzs': 'dbwdpzs'
-}
 
 
 # mysql -h 10.66.145.129 -P 3306 -u ctb -p

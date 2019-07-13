@@ -270,7 +270,7 @@ class wdpvipUser(models.Model):
 
 # 外地牌 申请订单 外地牌
 class wdpvipOrder(models.Model):
-    orderNum = models.UUIDField(primary_key=True,db_index=True)
+    orderNum = models.CharField(primary_key=True,max_length=255,db_index=True)
     userId = models.IntegerField(default=0, db_index=True)
     # 起始经纬度
     fromlon = models.FloatField(default=0)
