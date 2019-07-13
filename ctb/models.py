@@ -286,9 +286,9 @@ class wdpvipOrder(models.Model):
     # 路线状态：已支付后，就是路线规划的状态，AutoPlanning自动规划中，AdminConfirmPlanningOk管理员确认规划成功，AdminConfirmPlanningFail管理员确认规划失败
     planningRoute = models.CharField(max_length=255)
     # 来去,路线规划jsonList
-    fromRouteList = models.CharField(max_length=10240)
-    toRouteList = models.CharField(max_length=10240)
+    fromRouteList = models.CharField(max_length=65535)
+    toRouteList = models.CharField(max_length=65535)
     # 请求避让点的高德URL
-    requestGaoDeApi = models.CharField(max_length=10240)
+    requestGaoDeApi = models.CharField(max_length=65535)
 
 
