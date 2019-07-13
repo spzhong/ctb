@@ -249,12 +249,15 @@ def getAvoidRoute(request):
         stepsMsgArray = initStart(float(s_lon), float(s_lat), float(e_lon), float(e_lat))
         if type(stepsMsgArray) is list:
             steps = []
+            steps.append(str(s_lon) + "," + str(s_lat))
             for step in stepsMsgArray[0]:
                 try:
                     polylineStr = step['polyline']
                     polyLineList = polylineStr.split(';')
-                    steps.append({"road": step['road'], "instruction": step['instruction'], "orientation": step['orientation'],
-                                  "action": step['action'], "polyline":polyLineList[len(polyLineList) - 1]})
+                    steps.append(polyLineList[0])
+                    steps.append(polyLineList[len(polyLineList) - 1])
+                    #steps.append({"road": step['road'], "instruction": step['instruction'], "orientation": step['orientation'],
+                    #             "action": step['action'], "polyline":polyLineList[len(polyLineList) - 1]})
                 except:
                     continue
             return Comm.callBackSuccess(callBackDict, 1, {"start":s_lonlat,"end":e_lonlat,"avoidAreasCount":str(stepsMsgArray[1]),"list":steps})
