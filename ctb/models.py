@@ -4,7 +4,6 @@ from django.db import models
 
 
 
-
 # 用户
 class user(models.Model):
     openId = models.CharField(max_length=64,unique=True)
@@ -244,3 +243,52 @@ class otherRegionCoefficient(models.Model):
 # 端上调用顺序
 # 1. 打开App，访问网路权限
 # 2. 调用首次握手接口：autoHandshake(bundleIdentifier,ip)，将状态记录到本地，接口只调用一次
+
+
+
+
+#外地牌 wdpvip 外地牌
+class wdpvipUser(models.Model):
+    openId = models.CharField(max_length=64, unique=True)
+    phone = models.CharField(max_length=15, null=True, db_index=True)
+    name = models.CharField(max_length=255, null=True)
+    password = models.CharField(max_length=64, null=True)
+    # 0是管理员，1是运营人员，2是普通的用户
+    role = models.IntegerField(default=2)
+    createTime = models.BigIntegerField(default=0)
+    # 真是名字
+    trueName = models.CharField(max_length=255, null=True)
+    # 地址
+    address = models.CharField(max_length=520, null=True)
+    # 登录的token
+    loginToken = models.CharField(max_length=64, null=True)
+    # 是否是启用，默认是0，1是关闭
+    isEnabled = models.IntegerField(default=0)
+    # 登录的时间
+    loginTime = models.BigIntegerField(default=0)
+
+
+# 外地牌 申请订单 外地牌
+class wdpvipOrder(models.Model):
+    orderNum = models.UUIDField(primary_key=True,db_index=True)
+    userId = models.IntegerField(default=0, db_index=True)
+    # 起始经纬度
+    fromlon = models.FloatField(default=0)
+    fromlat = models.FloatField(default=0)
+    tolon = models.FloatField(default=0)
+    tolat = models.FloatField(default=0)
+    # 申请时间
+    createTime = models.BigIntegerField(default=0)
+    # 订单价格
+    orderPrice = models.IntegerField(default=298)
+    # 订单状态：DefaultStatus默认待支付（用户申请路线）,PaymentedStatus支付成功（管理员确认后，路线规划中）,DeleteStatus删除订单,RefundedStatus退款状态,OverStatus订单终结
+    orderStatus = models.CharField(max_length=255)
+    # 路线状态：已支付后，就是路线规划的状态，AutoPlanning自动规划中，AdminConfirmPlanningOk管理员确认规划成功，AdminConfirmPlanningFail管理员确认规划失败
+    planningRoute = models.CharField(max_length=255)
+    # 来去,路线规划jsonList
+    fromRouteList = models.CharField(max_length=10240)
+    toRouteList = models.CharField(max_length=10240)
+    # 请求避让点的高德URL
+    requestGaoDeApi = models.CharField(max_length=10240)
+
+
