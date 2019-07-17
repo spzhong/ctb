@@ -283,7 +283,7 @@ class wdpvipOrder(models.Model):
     orderPrice = models.IntegerField(default=298)
     # 订单状态：DefaultStatus默认待支付（用户申请路线）,PaymentedStatus支付成功（管理员确认后，路线规划中）,DeleteStatus删除订单,RefundedStatus退款状态,OverStatus订单终结
     orderStatus = models.CharField(max_length=255)
-    # 路线状态：已支付后，就是路线规划的状态，AutoPlanning自动规划中，AdminConfirmPlanningOk管理员确认规划成功，AdminConfirmPlanningFail管理员确认规划失败
+    # 路线状态：已支付后，就是路线规划的状态，AutoPlanning自动规划中，AutoPlanningFail自动规划中失败，AutoPlanningFinsh自动规划完成，AdminConfirmPlanningOk管理员确认规划成功，AdminConfirmPlanningFail管理员确认规划失败
     planningRoute = models.CharField(max_length=255)
     # 来去,路线规划jsonList
     fromRouteList = models.TextField()
