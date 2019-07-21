@@ -165,12 +165,19 @@ def adminModifyVdpOrder(request):
         toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
         # 来回两条路线的如果都是空
         if fromAotuDict['msg'] == None:
-            wdpvipOrderObj.fromRouteList = fromAotuDict['list']
+            try:
+                wdpvipOrderObj.fromRouteList = json.dumps(fromAotuDict['list'])
+
+            except BaseException as e:
+                wdpvipOrderObj.fromRouteList = []
             wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
         else:
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         if toAotuDict['msg'] == None:
-            wdpvipOrderObj.toRouteList = toAotuDict['list']
+            try:
+                wdpvipOrderObj.toRouteList = json.dumps(toAotuDict['list'])
+            except BaseException as e:
+                wdpvipOrderObj.toRouteList = []
             wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
         else:
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
