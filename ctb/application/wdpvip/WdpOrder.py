@@ -161,25 +161,25 @@ def adminModifyVdpOrder(request):
         wdpvipOrderObj.planningRoute = 'AutoPlanning'
         # 进行路线的规划
         # 来取两条路线规划
-        fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
-        toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
-        # 来回两条路线的如果都是空
-        if fromAotuDict['msg'] == None:
-            try:
-                wdpvipOrderObj.fromRouteList = json.dumps(fromAotuDict['list'])
-            except BaseException as e:
-                wdpvipOrderObj.fromRouteList = []
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
-        else:
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
-        if toAotuDict['msg'] == None:
-            try:
-                wdpvipOrderObj.toRouteList = json.dumps(toAotuDict['list'])
-            except BaseException as e:
-                wdpvipOrderObj.toRouteList = []
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
-        else:
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
+        # fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
+        # toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
+        # # 来回两条路线的如果都是空
+        # if fromAotuDict['msg'] == None:
+        #     try:
+        #         wdpvipOrderObj.fromRouteList = json.dumps(fromAotuDict['list'])
+        #     except BaseException as e:
+        #         wdpvipOrderObj.fromRouteList = []
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
+        # else:
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
+        # if toAotuDict['msg'] == None:
+        #     try:
+        #         wdpvipOrderObj.toRouteList = json.dumps(toAotuDict['list'])
+        #     except BaseException as e:
+        #         wdpvipOrderObj.toRouteList = []
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
+        # else:
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         # 进行路线的保存
         wdpvipOrderObj.save()
         Comm.callBackSuccess(callBackDict, 1, {"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList})
@@ -218,7 +218,7 @@ def adminModifyPlanningRouteOk(request):
         # 订单支付成功
         if wdpvipOrderObj.orderStatus == 'PaymentedStatus':
             # 进行处理--订单已经支付
-            if wdpvipOrderObj.planningRoute == "AutoPlanningFinsh":
+            if wdpvipOrderObj.planningRoute == "AutoPlanning":
                 # 管理员手动规划路线
                 wdpvipOrderObj.fromRouteList = getfromRouteList
                 wdpvipOrderObj.toRouteList = gettoRouteList
