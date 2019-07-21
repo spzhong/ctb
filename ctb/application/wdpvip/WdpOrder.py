@@ -101,7 +101,7 @@ def adminGetVdpOrder(request):
         getpageSize = 20
     else:
         getpageSize = int(getpageSize)
-    list = selectWdpvipOrder(None,getpage,getpageSize)
+    list = selectWdpvipOrder(None,getpage,getpageSize,getplanningRoute)
     if getorderStatus == "All":
         if getplanningRoute == 'All':
             callBackDict['totalNum'] = wdpvipOrder.objects.filter().count()
@@ -118,7 +118,7 @@ def adminGetVdpOrder(request):
 
 # 查询出来订单
 def selectWdpvipOrder(getuserId,getpage,getpageSize,getorderStatus,getplanningRoute):
-    if getuserId == None:
+    if getplanningRoute == None:
         wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-createTime")
     else:
         if getorderStatus == "All":
