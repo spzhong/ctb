@@ -31,7 +31,7 @@ def index(request,route):
         callBackDict = WdpOrder.createPlanningRoutes(request)
     elif route == 'getPlanningRoutes':
         callBackDict = WdpOrder.getPlanningRoutes(request)
-    elif route == 'getPlanningRoutes':
+    elif route == 'adminGetVdpOrder':
         callBackDict = WdpOrder.adminGetVdpOrder(request)
     elif route == 'adminModifyVdpOrder':
         callBackDict = WdpOrder.adminModifyVdpOrder(request)
