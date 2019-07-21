@@ -162,25 +162,26 @@ def adminModifyVdpOrder(request):
         # 进行路线的规划
         # 来取两条路线规划
         fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
-        toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
+        #toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
         # 来回两条路线的如果都是空
+        logger = logging.getLogger("django")
+        logger.info(str(fromAotuDict))
         if fromAotuDict['msg'] == None:
             try:
                 wdpvipOrderObj.fromRouteList = json.dumps(fromAotuDict['list'])
-
             except BaseException as e:
                 wdpvipOrderObj.fromRouteList = []
             wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
         else:
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
-        if toAotuDict['msg'] == None:
-            try:
-                wdpvipOrderObj.toRouteList = json.dumps(toAotuDict['list'])
-            except BaseException as e:
-                wdpvipOrderObj.toRouteList = []
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
-        else:
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
+        # if toAotuDict['msg'] == None:
+        #     try:
+        #         wdpvipOrderObj.toRouteList = json.dumps(toAotuDict['list'])
+        #     except BaseException as e:
+        #         wdpvipOrderObj.toRouteList = []
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
+        # else:
+        #     wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         # 进行路线的保存
         wdpvipOrderObj.save()
         Comm.callBackSuccess(callBackDict, 1, {"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList})
