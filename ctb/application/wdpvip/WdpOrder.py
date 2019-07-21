@@ -73,7 +73,7 @@ def getPlanningRoutes(request):
     userObj = Jurisdiction.wdpJurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
-    list = selectWdpvipOrder(None, 0, 0,None,None)
+    list = selectWdpvipOrder(getuserId, 0, 0,None,None)
     return Comm.callBackSuccess(callBackDict, 1, list)
 
 
