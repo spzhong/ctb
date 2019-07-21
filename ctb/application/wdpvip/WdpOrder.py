@@ -81,15 +81,15 @@ def getPlanningRoutes(request):
 def adminGetVdpOrder(request):
     # 取得获取的值
     callBackDict = {}
-    # 判断用户的角色及权限
-    userObj = Jurisdiction.wdpJurisAdminGETOpenId(request, callBackDict)
-    if userObj == None:
-        return callBackDict
     getorderStatus = Comm.tryTranslate(request, "orderStatus")
     if Comm.tryTranslateNull('orderStatus', getorderStatus, callBackDict) == False:
         return callBackDict
     getplanningRoute = Comm.tryTranslate(request, "planningRoute")
     if Comm.tryTranslateNull('planningRoute', getplanningRoute, callBackDict) == False:
+        return callBackDict
+    # 判断用户的角色及权限
+    userObj = Jurisdiction.wdpJurisAdminGETOpenId(request, callBackDict)
+    if userObj == None:
         return callBackDict
     getpage = Comm.tryTranslate(request, "page")
     getpageSize = Comm.tryTranslate(request, "pageSize")
@@ -121,22 +121,15 @@ def selectWdpvipOrder(getuserId,getpage,getpageSize,getorderStatus,getplanningRo
     if getuserId :
         wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-createTime")
     else:
-        logger = logging.getLogger("django")
-        logger.info('1')
         if getorderStatus == "All":
             if getplanningRoute == 'All':
-                logger.info('2')
                 wdpvipOrderList = wdpvipOrder.objects.filter().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
-                logger.info('6')
                 wdpvipOrderList = wdpvipOrder.objects.filter(planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         else:
-            logger.info('3')
             if getplanningRoute == 'All':
-                logger.info('4')
                 wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
-                logger.info('5')
                 wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus,planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for wdp in wdpvipOrderList:
@@ -169,7 +162,9 @@ def adminModifyVdpOrder(request):
         # 进行路线的规划
         # 来取两条路线规划
         fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
-        toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
+        toAotuDict = {}#PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
+        logger = logging.getLogger("django")
+        logger.info(str(fromAotuDict))
         # 来回两条路线的如果都是空
         if fromAotuDict['msg']:
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
