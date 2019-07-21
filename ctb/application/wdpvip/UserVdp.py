@@ -57,7 +57,7 @@ def adminGetAllUsers(request):
     # 取得获取的值
     callBackDict = {}
     # 验证用户的openID
-    userObj = Jurisdiction.wqpJurisdictGETOpenId(request, callBackDict)
+    userObj = Jurisdiction.wdpJurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
     getpage = Comm.tryTranslate(request, "page")
@@ -87,7 +87,7 @@ def perfectUserInfo(request):
     getaddress = Comm.tryTranslate(request, "address")
     gettrueName = Comm.tryTranslate(request, "trueName")
     # 验证用户的openID
-    userObj = Jurisdiction.wqpJurisdictGETOpenId(request, callBackDict)
+    userObj = Jurisdiction.wdpJurisdictGETOpenId(request, callBackDict)
     if userObj == None:
         return callBackDict
     try:

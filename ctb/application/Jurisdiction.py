@@ -78,7 +78,7 @@ def wdpJurisdictGETOpenId(request,callBackDict):
     if Comm.tryTranslateNull('userId',getuserId,callBackDict) == False:
         return None
     try:
-        userList = wdpvipUser.objects.filter(openId = getopenId, id=getuserId)
+        userList = wdpvipUser.objects.filter(openId = getopenId, id = getuserId)
         if len(userList) == 0:
             callBackDict['code'] = -2
             callBackDict['msg'] = "用户不存在"

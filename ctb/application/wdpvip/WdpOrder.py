@@ -50,7 +50,7 @@ def createPlanningRoutes(request):
         wdpvipOrderObj.createTime = int(time.time() * 1000)
         wdpvipOrderObj.save()
         # 返回订单编号
-        Comm.callBackFail(callBackDict, 1, wdpvipOrderObj.orderNum)
+        Comm.callBackSuccess(callBackDict, 1, wdpvipOrderObj.orderNum)
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
