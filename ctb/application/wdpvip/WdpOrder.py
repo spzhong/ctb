@@ -164,19 +164,19 @@ def adminModifyVdpOrder(request):
         fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
         toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
         # 来回两条路线的如果都是空
-        if fromAotuDict['msg']:
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
-        else:
+        if fromAotuDict['msg'] == None:
             wdpvipOrderObj.fromRouteList = fromAotuDict['list']
             wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
-        if toAotuDict['msg']:
-            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         else:
+            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
+        if toAotuDict['msg'] == None:
             wdpvipOrderObj.toRouteList = toAotuDict['list']
             wdpvipOrderObj.planningRoute = 'AutoPlanningFinsh'
+        else:
+            wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         # 进行路线的保存
         wdpvipOrderObj.save()
-        Comm.callBackFail(callBackDict, 1, list.append({"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList}))
+        Comm.callBackSuccess(callBackDict, 1, list.append({"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList}))
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
