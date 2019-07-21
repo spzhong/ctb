@@ -167,6 +167,10 @@ def httpLoadGD(origin,destination,avoidpolygons):
             url += "&avoidpolygons="+avoidpolygons[:-1]  #截取从头开始到倒数第一个字符之前
         url += "&ferry=1"       #不使用渡轮
         url += "&key=49521b5942bff4d41e5495698ab5bcb6"
+
+        logger = logging.getLogger("django")
+        logger.info(str(url))
+
         res = urllib2.urlopen(url, timeout=5)
         page_source = res.read().decode('utf-8')
         return page_source
