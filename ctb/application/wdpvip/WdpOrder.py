@@ -176,7 +176,7 @@ def adminModifyVdpOrder(request):
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'
         # 进行路线的保存
         wdpvipOrderObj.save()
-        Comm.callBackSuccess(callBackDict, 1, list.append({"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList}))
+        Comm.callBackSuccess(callBackDict, 1, {"orderNum":wdpvipOrderObj.orderNum,"userId":wdpvipOrderObj.userId,"fromlon":wdpvipOrderObj.fromlon,"fromlat":wdpvipOrderObj.fromlat,"tolon":wdpvipOrderObj.tolon,"tolat":wdpvipOrderObj.tolat,"createTime":wdpvipOrderObj.createTime,"orderPrice":wdpvipOrderObj.orderPrice,"orderStatus":wdpvipOrderObj.orderStatus,"planningRoute":wdpvipOrderObj.planningRoute,"fromRouteList":wdpvipOrderObj.fromRouteList,"toRouteList":wdpvipOrderObj.toRouteList})
     except BaseException as e:
         logger = logging.getLogger("django")
         logger.info(str(e))
