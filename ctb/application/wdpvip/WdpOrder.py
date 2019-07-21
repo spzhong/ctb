@@ -162,9 +162,7 @@ def adminModifyVdpOrder(request):
         # 进行路线的规划
         # 来取两条路线规划
         fromAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.fromlon,wdpvipOrderObj.fromlat,wdpvipOrderObj.tolon,wdpvipOrderObj.tolat)
-        toAotuDict = {}#PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
-        logger = logging.getLogger("django")
-        logger.info(str(fromAotuDict))
+        toAotuDict = PlanningRoutes.autoAvoidRoute(wdpvipOrderObj.tolon,wdpvipOrderObj.tolat,wdpvipOrderObj.fromlon, wdpvipOrderObj.fromlat)
         # 来回两条路线的如果都是空
         if fromAotuDict['msg']:
             wdpvipOrderObj.planningRoute = 'AutoPlanningFail'

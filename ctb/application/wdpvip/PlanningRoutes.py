@@ -244,7 +244,7 @@ def autoAvoidRoute(s_lon,s_lat,e_lon,e_lat):
                     except:
                         continue
                     steps.append(str(e_lon) + "," + str(e_lat))
-                    return {"start":str(s_lon)+","+str(s_lat),"end":str(e_lon)+","+str(e_lat),"avoidAreasCount":str(stepsMsgArray[1]),"list":steps}
+                    return {"msg":None,"start":str(s_lon)+","+str(s_lat),"end":str(e_lon)+","+str(e_lat),"avoidAreasCount":str(stepsMsgArray[1]),"list":steps}
             else:
                 # 错误信息提示
                 return {"msg": stepsMsgArray}
