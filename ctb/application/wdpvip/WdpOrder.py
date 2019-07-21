@@ -101,7 +101,7 @@ def adminGetVdpOrder(request):
         getpageSize = 20
     else:
         getpageSize = int(getpageSize)
-    list = selectWdpvipOrder(None,getpage,getpageSize,getplanningRoute)
+    list = selectWdpvipOrder(None,getpage,getpageSize,getorderStatus,getplanningRoute)
     if getorderStatus == "All":
         if getplanningRoute == 'All':
             callBackDict['totalNum'] = wdpvipOrder.objects.filter().count()
