@@ -121,15 +121,22 @@ def selectWdpvipOrder(getuserId,getpage,getpageSize,getorderStatus,getplanningRo
     if getplanningRoute == None:
         wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-createTime")
     else:
+        logger = logging.getLogger("django")
+        logger.info('1')
         if getorderStatus == "All":
             if getplanningRoute == 'All':
+                logger.info('2')
                 wdpvipOrderList = wdpvipOrder.objects.filter().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
+                logger.info('6')
                 wdpvipOrderList = wdpvipOrder.objects.filter(planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         else:
+            logger.info('3')
             if getplanningRoute == 'All':
+                logger.info('4')
                 wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
+                logger.info('5')
                 wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus,planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for wdp in wdpvipOrderList:
