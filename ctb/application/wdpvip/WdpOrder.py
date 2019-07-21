@@ -119,18 +119,18 @@ def adminGetVdpOrder(request):
 # 查询出来订单
 def selectWdpvipOrder(getuserId,getpage,getpageSize,getorderStatus,getplanningRoute):
     if getuserId == None:
-        wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-loginTime")
+        wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-createTime")
     else:
         if getorderStatus == "All":
             if getplanningRoute == 'All':
-                wdpvipOrderList = wdpvipOrder.objects.filter().order_by("-loginTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+                wdpvipOrderList = wdpvipOrder.objects.filter().order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
-                wdpvipOrderList = wdpvipOrder.objects.filter(planningRoute=getplanningRoute).order_by("-loginTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+                wdpvipOrderList = wdpvipOrder.objects.filter(planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
         else:
             if getplanningRoute == 'All':
-                wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus).order_by("-loginTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+                wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
             else:
-                wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus,planningRoute=getplanningRoute).order_by("-loginTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
+                wdpvipOrderList = wdpvipOrder.objects.filter(orderStatus=getorderStatus,planningRoute=getplanningRoute).order_by("-createTime")[getpage*getpageSize:(getpage*getpageSize+getpageSize)]
     list = []
     for wdp in wdpvipOrderList:
         list.append({"orderNum":wdp.orderNum,"userId":wdp.userId,"fromlon":wdp.fromlon,"fromlat":wdp.fromlat,"tolon":wdp.tolon,"tolat":wdp.tolat,"createTime":wdp.createTime,"orderPrice":wdp.orderPrice,"orderStatus":wdp.orderStatus,"planningRoute":wdp.planningRoute,"fromRouteList":wdp.fromRouteList,"toRouteList":wdp.toRouteList})
