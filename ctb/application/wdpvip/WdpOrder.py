@@ -118,7 +118,7 @@ def adminGetVdpOrder(request):
 
 # 查询出来订单
 def selectWdpvipOrder(getuserId,getpage,getpageSize,getorderStatus,getplanningRoute):
-    if getplanningRoute == None:
+    if getuserId :
         wdpvipOrderList = wdpvipOrder.objects.filter(userId=getuserId).order_by("-createTime")
     else:
         logger = logging.getLogger("django")
